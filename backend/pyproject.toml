@@ -1,0 +1,17 @@
+[project]
+name = "amlakpro-backend"
+version = "1.0.0"
+description = "AmlakPro Django REST API"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+  "Django>=5.2,<6.0",
+  "djangorestframework>=3.16,<4.0",
+  "Pillow>=11.0,<12.0",
+  "django-cors-headers>=4.7,<5.0",
+  "django-filter>=25.1,<26.0",
+  "dj-database-url>=2.3,<3.0",
+  "psycopg2-binary>=2.9,<3.0",
+]
+
+[tool.vercel.scripts]
+build = "python manage.py migrate --noinput"
