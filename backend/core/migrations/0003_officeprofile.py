@@ -1,11 +1,13 @@
-from django.db import migrations, models
+from django.db import migrations
+
 
 class Migration(migrations.Migration):
-    dependencies = [('core','0002_token')]
-    operations = [migrations.CreateModel(name='OfficeProfile', fields=[
-        ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-        ('name', models.CharField(default='دفتر املاک', max_length=160)), ('phone', models.CharField(blank=True,max_length=30)),
-        ('mobile', models.CharField(blank=True,max_length=30)), ('address', models.CharField(blank=True,max_length=300)),
-        ('city', models.CharField(blank=True,max_length=80)), ('description', models.TextField(blank=True)),
-        ('updated_at', models.DateTimeField(auto_now=True)),
-    ], options={'verbose_name':'اطلاعات دفتر','verbose_name_plural':'اطلاعات دفتر'})]
+    """Compatibility migration.
+
+    OfficeProfile is already created by 0001_initial. This migration is
+    intentionally a no-op so fresh databases and existing databases follow
+    the same migration history without attempting to create the table twice.
+    """
+
+    dependencies = [('core', '0002_token')]
+    operations = []
