@@ -1,0 +1,37 @@
+<a class="skip-link" href="#main-content">پرش به محتوای اصلی</a>
+<header class="nav">
+  <a routerLink="/" class="brand" aria-label="املاک پرو - صفحه اصلی" (click)="closeMenu()"><span>AMLAK</span><b>PRO</b></a>
+
+  <button class="menu-toggle" type="button" [attr.aria-expanded]="menuOpen" aria-controls="main-navigation" aria-label="باز کردن منو" (click)="menuOpen = !menuOpen">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="main-navigation" aria-label="منوی اصلی" [class.is-open]="menuOpen">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">خانه</a>
+    <a routerLink="/properties" routerLinkActive="active" (click)="closeMenu()">املاک</a>
+    <a routerLink="/agents" routerLinkActive="active" (click)="closeMenu()">مشاوران</a>
+    <a routerLink="/favorites" routerLinkActive="active" class="favorites-link" (click)="closeMenu()">
+      علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span>
+    </a>
+  </nav>
+
+  <a class="nav-call" [href]="office.phone ? 'tel:' + office.phone : null">
+    {{ office.phone || 'تماس با دفتر' }}
+  </a>
+</header>
+
+<main id="main-content">
+  <router-outlet />
+</main>
+
+<footer>
+  <div>
+    <strong>AMLAK<span>PRO</span></strong>
+    <p>{{ office.description || 'خانه‌ای که دنبالش هستید، پیدا می‌کنیم.' }}</p>
+    <small>{{ office.address || 'اطلاعات دفتر در حال تکمیل است.' }}</small>
+  </div>
+  <div>
+    <small>{{ office.mobile || office.phone || '—' }}</small><br />
+    <small>© ۱۴۰۵ — تمامی حقوق محفوظ است.</small>
+  </div>
+</footer>

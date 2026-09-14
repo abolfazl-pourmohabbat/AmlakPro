@@ -1,0 +1,25 @@
+<section class="analytics-page" *ngIf="!loading && data">
+  <header class="analytics-head">
+    <div><span class="eyebrow dark">AMLAKPRO INSIGHTS</span><h1>گزارش و عملکرد دفتر</h1><p>نمای ۳۰ روز اخیر از سرنخ‌ها، معاملات و ترکیب فایل‌های ملکی.</p></div>
+    <div class="analytics-actions"><a routerLink="/dashboard">داشبورد</a><a routerLink="/admin">مدیریت</a><button (click)="logout()">خروج</button></div>
+  </header>
+
+  <div class="analytics-stats">
+    <article><small>کل سرنخ‌ها</small><strong>{{data.summary.total_leads}}</strong><span>در کل سیستم</span></article>
+    <article><small>سرنخ فعال</small><strong>{{data.summary.active_leads}}</strong><span>نیازمند پیگیری</span></article>
+    <article><small>معامله</small><strong>{{data.summary.closed_leads}}</strong><span>تبدیل‌شده</span></article>
+    <article><small>نرخ تبدیل</small><strong>{{data.summary.conversion_rate}}٪</strong><span>سرنخ به معامله</span></article>
+  </div>
+
+  <div class="analytics-grid">
+    <article class="analytics-card wide"><div class="card-head"><div><h2>ورودی سرنخ‌ها</h2><p>تعداد درخواست‌های ثبت‌شده در هر روز</p></div><b>۳۰ روز</b></div><div class="bar-chart daily"><div class="bar-col" *ngFor="let item of data.daily_leads"><div class="bar-value">{{item.count}}</div><div class="bar" [style.height]="bar(item.count,maxDaily())"></div><small>{{item.date | date:'MM/dd'}}</small></div></div></article>
+
+    <article class="analytics-card"><div class="card-head"><div><h2>نوع فایل‌ها</h2><p>ترکیب موجودی دفتر</p></div></div><div class="rank-list"><div *ngFor="let item of data.property_types"><div class="rank-label"><span>{{item.label}}</span><b>{{item.count}}</b></div><div class="progress"><i [style.width]="bar(item.count, data.summary.properties)"></i></div></div></div></article>
+
+    <article class="analytics-card"><div class="card-head"><div><h2>نوع معامله</h2><p>توزیع فروش، رهن و اجاره</p></div></div><div class="deal-list"><div *ngFor="let item of data.deal_types"><strong>{{item.count}}</strong><span>{{item.label}}</span></div></div></article>
+
+    <article class="analytics-card wide"><div class="card-head"><div><h2>عملکرد مشاوران</h2><p>مقایسه سرنخ، معامله و نرخ تبدیل</p></div></div><div class="agent-table"><div class="agent-row agent-head"><span>مشاور</span><span>سرنخ</span><span>معامله</span><span>تبدیل</span></div><div class="agent-row" *ngFor="let a of data.agents"><span><b>{{a.name}}</b><i class="mini-progress"><em [style.width]="bar(a.leads,maxAgent())"></em></i></span><span>{{a.leads}}</span><span>{{a.closed}}</span><strong>{{a.conversion}}٪</strong></div><div class="empty" *ngIf="!data.agents.length">هنوز مشاور فعالی برای گزارش وجود ندارد.</div></div></article>
+  </div>
+</section>
+<section class="analytics-state" *ngIf="loading"><span class="loader"></span><p>در حال آماده‌سازی گزارش...</p></section>
+<section class="analytics-state error-state" *ngIf="!loading && error"><h2>گزارش در دسترس نیست</h2><p>{{error}}</p><a routerLink="/dashboard">بازگشت به داشبورد</a></section>

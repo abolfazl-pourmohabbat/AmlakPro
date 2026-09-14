@@ -1,0 +1,32 @@
+<div *ngIf="loading" class="detail-state">در حال بارگذاری...</div>
+<section *ngIf="!loading && item" class="detail">
+  <a routerLink="/properties" class="back">← بازگشت به املاک</a>
+  <div class="detail-grid">
+    <div>
+      <div class="detail-photo" [style.backgroundImage]="selectedImage ? 'url('+selectedImage+')' : 'linear-gradient(135deg,#29251f,#817057)'"><span>{{deal(item!.deal_type)}}</span></div>
+      <div class="thumbs" *ngIf="item!.gallery?.length">
+        <button *ngIf="item!.image_url" class="thumb" [class.active]="selectedImage===item!.image_url" (click)="selectedImage=item!.image_url"><img [src]="item!.image_url!" alt="تصویر اصلی ملک"></button>
+        <button class="thumb" *ngFor="let g of item!.gallery" [class.active]="selectedImage===g.image_url" (click)="selectedImage=g.image_url"><img [src]="g.image_url!" alt="تصویر ملک"></button>
+      </div>
+    </div>
+    <div class="detail-copy">
+      <small>{{item!.city}}، {{item!.district}}</small><h1>{{item!.title}}</h1>
+      <div class="price" *ngIf="item!.deal_type==='sale'">{{item!.price ? (item!.price|number) : 'تماس بگیرید'}} <small>تومان</small></div>
+      <div class="price" *ngIf="item!.deal_type!=='sale'">{{item!.deposit ? ('ودیعه: '+(item!.deposit|number)) : ''}} <small *ngIf="item!.deposit">تومان</small><br><span *ngIf="item!.rent">اجاره: {{item!.rent|number}} تومان</span></div>
+      <div class="facts"><b>{{item!.area}}<small> متر</small></b><b>{{item!.bedrooms}}<small> خواب</small></b><b>{{item!.floor||'—'}}<small> طبقه</small></b><b>{{item!.built_year||'—'}}<small> سال ساخت</small></b></div>
+      <p>{{item!.description || 'برای دریافت اطلاعات کامل‌تر و هماهنگی بازدید با مشاور دفتر تماس بگیرید.'}}</p>
+      <div class="amenities"><span *ngIf="item!.parking">پارکینگ</span><span *ngIf="item!.elevator">آسانسور</span><span *ngIf="item!.storage">انباری</span><span *ngIf="item!.balcony">بالکن</span></div>
+      <div class="agent-box" *ngIf="item!.agent_name"><b>{{item!.agent_name}}</b><small>مشاور این ملک</small><a [href]="'tel:'+item!.agent_phone">{{item!.agent_phone}}</a></div>
+      <div class="detail-actions"><button class="outline favorite-detail" type="button" (click)="toggleFavorite()">{{item && favorites.has(item.slug) ? '♥ در علاقه‌مندی‌ها' : '♡ افزودن به علاقه‌مندی‌ها'}}</button><a [href]="'tel:'+item!.agent_phone">تماس با مشاور</a><a class="outline" href="#contact">درخواست بازدید</a></div>
+    </div>
+  </div>
+  <section id="contact" class="lead-form">
+    <div class="section-head"><div><span class="eyebrow dark">REQUEST A VISIT</span><h2>درخواست بازدید</h2></div></div>
+    <div *ngIf="submitted" class="success-box">درخواست شما ثبت شد. مشاور دفتر در اولین فرصت با شما تماس می‌گیرد.</div>
+    <form *ngIf="!submitted" (ngSubmit)="submitLead()">
+      <div class="form-grid"><label>نام و نام خانوادگی<input [(ngModel)]="lead.name" name="name" required></label><label>شماره موبایل<input [(ngModel)]="lead.phone" name="phone" type="tel" required></label><label>زمان پیشنهادی<input [(ngModel)]="lead.preferred_time" name="preferred_time" placeholder="مثلاً فردا عصر"></label></div>
+      <label>توضیحات<textarea [(ngModel)]="lead.message" name="message" rows="4" placeholder="اگر سؤال یا درخواست خاصی دارید..."></textarea></label><small class="error">{{error}}</small><button class="primary" [disabled]="submitting">{{submitting?'در حال ارسال...':'ثبت درخواست بازدید'}}</button>
+    </form>
+  </section>
+</section>
+<div *ngIf="!loading && !item" class="detail-state">ملک موردنظر پیدا نشد.</div>
