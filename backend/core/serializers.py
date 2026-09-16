@@ -69,7 +69,7 @@ class PropertySerializer(serializers.ModelSerializer):
     agent_name = serializers.CharField(source='agent.name', read_only=True)
     agent_phone = serializers.CharField(source='agent.phone', read_only=True)
     image_url = serializers.SerializerMethodField()
-    gallery = PropertyImageSerializer(source='gallery', many=True, read_only=True)
+    gallery = PropertyImageSerializer( many=True, read_only=True)
 
     class Meta:
         model = Property
