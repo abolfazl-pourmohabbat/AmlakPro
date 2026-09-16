@@ -26,8 +26,8 @@ class AgentSerializer(serializers.ModelSerializer):
 
     def validate_image(self, value):
         if value:
-            if value.size > 10 * 1024 * 1024:
-                raise serializers.ValidationError('حجم تصویر نباید بیشتر از ۱۰ مگابایت باشد.')
+            if value.size > 4 * 1024 * 1024:
+                raise serializers.ValidationError('حجم تصویر نباید بیشتر از ۴ مگابایت باشد.')
             content_type = getattr(value, 'content_type', '')
             if content_type and content_type not in {'image/jpeg', 'image/png', 'image/webp'}:
                 raise serializers.ValidationError('فرمت تصویر باید JPG، PNG یا WebP باشد.')
@@ -38,8 +38,8 @@ class PropertyImageSerializer(serializers.ModelSerializer):
 
     def validate_image(self, value):
         if value:
-            if value.size > 10 * 1024 * 1024:
-                raise serializers.ValidationError('حجم تصویر نباید بیشتر از ۱۰ مگابایت باشد.')
+            if value.size > 4 * 1024 * 1024:
+                raise serializers.ValidationError('حجم تصویر نباید بیشتر از ۴ مگابایت باشد.')
             content_type = getattr(value, 'content_type', '')
             if content_type and content_type not in {'image/jpeg', 'image/png', 'image/webp'}:
                 raise serializers.ValidationError('فرمت تصویر باید JPG، PNG یا WebP باشد.')
@@ -59,8 +59,8 @@ class PropertyImageSerializer(serializers.ModelSerializer):
 class PropertySerializer(serializers.ModelSerializer):
     def validate_image(self, value):
         if value:
-            if value.size > 10 * 1024 * 1024:
-                raise serializers.ValidationError('حجم تصویر نباید بیشتر از ۱۰ مگابایت باشد.')
+            if value.size > 4 * 1024 * 1024:
+                raise serializers.ValidationError('حجم تصویر نباید بیشتر از ۴ مگابایت باشد.')
             content_type = getattr(value, 'content_type', '')
             if content_type and content_type not in {'image/jpeg', 'image/png', 'image/webp'}:
                 raise serializers.ValidationError('فرمت تصویر باید JPG، PNG یا WebP باشد.')

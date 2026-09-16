@@ -15,12 +15,12 @@ export class AdminComponent {
  selectTab(t:string){this.tab=t;this.message='';this.error='';}
  resetProperty(){this.editing=null;this.image=null;this.form={title:'',slug:'',deal_type:'sale',property_type:'apartment',city:'',district:'',address:'',area:100,bedrooms:2,floor:'',built_year:'',price:0,deposit:0,rent:0,status:'available',featured:false,agent:'',parking:false,elevator:false,storage:false,balcony:false,description:''};}
  editProperty(p:Property){this.editing=p;this.form={...p,agent:p.agent||''};window.scrollTo({top:0,behavior:'smooth'});}
- onImage(e:any){this.image=e.target.files?.[0]||null;}
+ onImage(e:any){const file=e.target.files?.[0]||null;this.image=file;if(file&&file.size>4*1024*1024){this.error='حجم تصویر باید کمتر از ۴ مگابایت باشد.';this.image=null;e.target.value='';}}
  saveProperty(){const fd=new FormData();Object.entries(this.form).forEach(([k,v])=>{if(v!==null&&v!==undefined)fd.append(k,String(v));});if(this.image)fd.append('image',this.image);const req=this.editing?this.api.updateProperty(this.editing.slug,fd):this.api.createProperty(fd);req.subscribe({next:()=>{this.message='ملک با موفقیت ذخیره شد.';this.resetProperty();this.api.properties().subscribe(v=>this.properties=this.api.list<Property>(v))},error:e=>this.error=Object.values(e.error||{}).flat().join(' ')||'ذخیره ملک ناموفق بود.'});}
  removeProperty(p:Property){if(!confirm(`حذف «${p.title}»؟`))return;this.api.deleteProperty(p.slug).subscribe(()=>this.properties=this.properties.filter(x=>x.slug!==p.slug));}
  resetAgent(){this.editingAgent=null;this.agentImage=null;this.agentForm={name:'',role:'',phone:'',bio:'',is_active:true};}
  editAgent(a:Agent){this.editingAgent=a;this.agentForm={...a};window.scrollTo({top:0,behavior:'smooth'});}
- onAgentImage(e:any){this.agentImage=e.target.files?.[0]||null;}
+ onAgentImage(e:any){const file=e.target.files?.[0]||null;this.agentImage=file;if(file&&file.size>4*1024*1024){this.error='حجم تصویر باید کمتر از ۴ مگابایت باشد.';this.agentImage=null;e.target.value='';}}
  saveAgent(){const fd=new FormData();Object.entries(this.agentForm).forEach(([k,v])=>{if(v!==null&&v!==undefined)fd.append(k,String(v));});if(this.agentImage)fd.append('image',this.agentImage);const req=this.editingAgent?this.api.updateAgent(this.editingAgent.id,fd):this.api.createAgent(fd);req.subscribe({next:()=>{this.message='مشاور با موفقیت ذخیره شد.';this.resetAgent();this.api.agents().subscribe(v=>this.agents=this.api.list<Agent>(v))},error:e=>this.error='ذخیره مشاور ناموفق بود.'});}
  removeAgent(a:Agent){if(!confirm(`حذف «${a.name}»؟`))return;this.api.deleteAgent(a.id).subscribe(()=>this.agents=this.agents.filter(x=>x.id!==a.id));}
  saveOffice(){this.api.updateOffice(this.office).subscribe({next:()=>this.message='اطلاعات دفتر ذخیره شد.',error:()=>this.error='ذخیره اطلاعات دفتر ناموفق بود.'});}
