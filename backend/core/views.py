@@ -44,13 +44,12 @@ class OfficeProfileView(APIView):
 
 class PropertyListCreateView(generics.ListCreateAPIView):
     serializer_class = PropertySerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = {
         'deal_type': ['exact'], 'property_type': ['exact'], 'city': ['exact', 'icontains'],
         'district': ['exact', 'icontains'], 'status': ['exact'], 'featured': ['exact'],
         'bedrooms': ['exact', 'gte'], 'area': ['gte', 'lte'], 'price': ['gte', 'lte'],
     }
-    search_fields = ['title', 'city', 'district', 'address', 'description']
     ordering_fields = ['created_at', 'updated_at', 'price', 'area', 'bedrooms']
     ordering = ['-featured', '-created_at']
 
@@ -61,6 +60,19 @@ class PropertyListCreateView(generics.ListCreateAPIView):
         qs = Property.objects.select_related('agent').prefetch_related('gallery').all()
         if self.request.query_params.get('public') == '1':
             qs = qs.filter(status__in=['available', 'negotiating'])
+
+        # The frontend sends the search text as `q`. Search the entered phrase
+        # in the fields users actually expect: property title, city and district.
+        # Unlike DRF SearchFilter's token-based behavior, this keeps a phrase such
+        # as «سعادت آباد» together so it cannot match separate words across fields.
+        q = (self.request.query_params.get('q') or '').strip()
+        if q:
+            qs = qs.filter(
+                Q(title__icontains=q)
+                | Q(city__icontains=q)
+                | Q(district__icontains=q)
+            )
+
         return qs
 
 class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
