@@ -1,12 +1,11 @@
-# AmlakPro — Lead Status Fix
+# AmlakPro — Lead Status PATCH Fix v2
 
-این patch فقط باگ ذخیره‌نشدن وضعیت Lead را اصلاح می‌کند.
-
-علت:
-`status` در `LeadSerializer` به اشتباه `read_only` بود؛ بنابراین PATCH/PUT داشبورد وضعیت را دریافت می‌کرد اما DRF آن را برای ذخیره وارد `validated_data` نمی‌کرد.
+علت خطای 415 در داشبورد این بود که `setStatus()` مقدار وضعیت را به صورت string خام (`contacted`) به PATCH می‌فرستاد.
 
 اصلاح:
-`status` از `read_only_fields` حذف شده و حالا تغییر وضعیت توسط کاربر staff از طریق endpoint موجود `/api/leads/<id>/` قابل ذخیره است.
+- ارسال وضعیت به شکل JSON: `{ status: 'contacted' }`
+- endpoint همان `/api/leads/<id>/` باقی می‌ماند.
+- Backend فعلی پروژه نیز باید شامل اصلاح `LeadSerializer` باشد که `status` را writable کرده است.
 
-فایل جایگزین:
-`backend/core/serializers.py`
+فایل:
+`frontend/src/app/features/dashboard.component.ts`

@@ -23,7 +23,7 @@ signIn(){this.error='';this.auth.login(this.login.username,this.login.password).
 
 statusLabel(s:string){return ({new:'جدید',contacted:'تماس گرفته شد',visit:'بازدید',closed:'معامله شد',cancelled:'لغو شد'} as any)[s]||s;}
 
-setStatus(lead:any,status:string){this.api.updateLead(lead.id,status).subscribe(()=>lead.status=status);}
+setStatus(lead:any,status:string){this.api.updateLead(lead.id,{status}).subscribe({next:()=>lead.status=status,error:()=>{lead.status=lead.status;}});}
 
 logout(){this.auth.logout();this.data=null;}
 
