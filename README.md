@@ -1,121 +1,12 @@
-AmlakPro v21 — نسخه نهایی و آماده تحویل
+# AmlakPro — Lead Status Fix
 
-# AmlakPro
-سامانه وب مدرن دفتر املاک با Angular 20 و Django REST Framework.
+این patch فقط باگ ذخیره‌نشدن وضعیت Lead را اصلاح می‌کند.
 
-## اجرا
-### Backend
-```bash
-cd backend
-python -m venv .venv
-# Windows: .venv\\Scripts\\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
-```
-### Frontend
-```bash
-cd frontend
-npm install
-npm start
-```
+علت:
+`status` در `LeadSerializer` به اشتباه `read_only` بود؛ بنابراین PATCH/PUT داشبورد وضعیت را دریافت می‌کرد اما DRF آن را برای ذخیره وارد `validated_data` نمی‌کرد.
 
-## Deployment
+اصلاح:
+`status` از `read_only_fields` حذف شده و حالا تغییر وضعیت توسط کاربر staff از طریق endpoint موجود `/api/leads/<id>/` قابل ذخیره است.
 
-The complete repository is intended to live in GitHub. The Angular frontend can be deployed from `frontend/` (for example on Vercel), while the Django API and PostgreSQL database should be deployed on a backend-capable service or VPS. See `DEPLOYMENT.md` for the exact setup.
-
-> A production `package-lock.json` is not included because dependency installation could not complete in the restricted build environment used for this handoff. Generate it with `npm install` in a networked development environment and commit it before using `npm ci` in CI.
-
-## Production
-- مقدارهای `.env.example` را در `.env` تنظیم کنید.
-- `DJANGO_DEBUG=false` و `DJANGO_SECRET_KEY` واقعی استفاده کنید.
-- برای production از PostgreSQL و HTTPS استفاده کنید.
-- `python manage.py check --deploy` را اجرا کنید.
-- برای Docker: `docker compose up --build`.
-
-## API
-`/api/properties/`, `/api/agents/`, `/api/leads/`, `/api/dashboard/`, `/api/office/`, `/api/health/`
-
-
-## v7 quality upgrades
-- Property gallery model and API (`property-images/`).
-- Automatic unique property slugs when omitted.
-- Anonymous lead throttling to reduce abuse.
-- Backend API tests for public reads, lead creation, slug generation and staff-only writes.
-- Angular dashboard now uses the configured API base URL instead of a hard-coded localhost URL.
-- Explicit Django migrations are included.
-
-
-## v8 highlights
-- Public property detail now supports gallery thumbnails and visit-request lead form.
-- Property API exposes gallery data safely without recursive serializer definitions.
-- Public property listing handles API failures and current filters more reliably.
-- Production review follows Angular routing/lazy-loading guidance and Django deployment/security checklist.
-
-## v9 hardening
-- Lead validation for name/phone and unavailable properties
-- Robust handling of paginated API responses in Angular
-- Public property pagination UI
-- Featured properties requested server-side
-- Additional API regression tests
-
-The API uses DRF pagination/filtering patterns and is intended to keep public listing responses bounded as the inventory grows.
-
-## v11 highlights
-- Favorites page at `/favorites` with persistent browser storage.
-- Optimized property card images using Angular `NgOptimizedImage` with explicit dimensions and lazy loading.
-- Property list/detail/gallery queries use `select_related` + `prefetch_related` to reduce database round-trips.
-- Lead endpoint now uses DRF `ScopedRateThrottle` with the existing `lead` scope.
-- Uploaded property/agent/gallery images are validated for size (10 MB max) and common image formats.
-- Responsive favorites UI and navigation badge.
-
-## v14 — Clean-up & polish
-- ساده‌سازی ساختار Root component با template جداگانه
-- صفحه 404 واقعی به‌جای redirect به خانه
-- بهبود دسترسی‌پذیری focus states
-- حفظ UI مینیمال و جلوگیری از افزودن قابلیت‌های غیرضروری
-
-
-## v16
-- داشبورد پیگیری‌های عقب‌افتاده مشتریان
-- اعتبارسنجی زمان پیگیری در Backend
-- نمایش ساده و واضح موارد نیازمند تماس
-- بدون افزودن پیچیدگی غیرضروری
-
-## v17
-- Added simple property sorting (featured, newest, price, area).
-- Added one-click filter reset.
-- Kept the public property search intentionally simple and uncluttered.
-
-## v20 — Production readiness
-- Docker Compose now waits for PostgreSQL and backend health before starting dependent services.
-- PostgreSQL credentials are supplied through environment variables instead of being hard-coded in Compose.
-- Uploaded media uses a shared Docker volume and is served directly by Nginx; Django is not used as the production media server.
-- Nginx forwards the original host/proxy headers and supports Angular SPA fallback.
-- Added a root `.gitignore` so secrets, local databases, media, build output and dependencies are not committed.
-- Added a complete backend `.env.example` for local/production configuration.
-- Added simple service health checks without introducing another monitoring stack.
-
-### Production checklist
-1. Copy `backend/.env.example` to `backend/.env` and replace every placeholder.
-2. Keep `DJANGO_DEBUG=false` and set the real domain in `DJANGO_ALLOWED_HOSTS` and `CORS_ALLOWED_ORIGINS`.
-3. Set a strong unique `POSTGRES_PASSWORD`.
-4. Run `docker compose up --build`.
-5. Run `docker compose exec backend python manage.py check --deploy`.
-6. Put the stack behind HTTPS at the real domain.
-7. Back up both `postgres_data` and `media_data`.
-
-Angular's production build is generated by `ng build`, while Django recommends a production WSGI/ASGI server instead of `runserver` and a final `check --deploy` before release.
-
-## v21 — Final handoff
-- Final cleanup pass focused on simplicity, maintainability and production safety.
-- Fixed the production Angular Docker output path to match the actual Angular project name.
-- Docker frontend install uses `npm install` because this repository intentionally does not ship a generated lockfile yet; generate and commit `package-lock.json` in a networked development environment before pinning CI to `npm ci`.
-- Added a concise final verification checklist below.
-
-### Final verification
-- Backend Python syntax check: passed.
-- Angular dependency installation/build: not executed successfully in this restricted environment because package installation timed out.
-- Before first real deployment, run `npm install`, `npm run build`, `python manage.py test`, and `python manage.py check --deploy` in the target environment.
-- Use a real secret, production hosts/CORS values, PostgreSQL credentials and HTTPS.
+فایل جایگزین:
+`backend/core/serializers.py`
