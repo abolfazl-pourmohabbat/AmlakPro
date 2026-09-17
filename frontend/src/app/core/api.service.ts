@@ -27,5 +27,8 @@ export interface Agent {id:number;name:string;role:string;phone:string;bio:strin
  updateOffice(data:any){return this.http.put(`${this.base}/office/`,data,{headers:this.headers()});}
  dashboard(){return this.http.get<any>(`${this.base}/dashboard/`,{headers:this.headers()});}
  analytics(){return this.http.get<any>(`${this.base}/analytics/`,{headers:this.headers()});}
+ favorites(){return this.http.get<Array<{property_slug:string;property_id:number}>>(`${this.base}/favorites/`,{headers:this.headers()});}
+ addFavorite(slug:string){return this.http.post(`${this.base}/favorites/`,{property_slug:slug},{headers:this.headers()});}
+ removeFavorite(slug:string){return this.http.delete(`${this.base}/favorites/${encodeURIComponent(slug)}/`,{headers:this.headers()});}
  lead(data:unknown):Observable<unknown>{return this.http.post(`${this.base}/leads/`,data);}
 }
