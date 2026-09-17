@@ -6,7 +6,7 @@ import { catchError, finalize, of } from 'rxjs';
 
 const GUEST_KEY = 'amlakpro.favorite-slugs.guest';
 
-@Injectable({providedIn: 'root'})
+@Injectable({providedIn:'root'})
 export class FavoritesService {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
@@ -15,23 +15,24 @@ export class FavoritesService {
   private accountKey: string | null = null;
   private syncing = false;
 
+  constructor() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('amlak-auth-changed', () => {
+        if (this.auth.loggedIn()) this.syncWithAccount();
+        else this.resetAfterLogout();
+      });
+    }
+  }
+
   private read(key: string): string[] {
     try {
       const parsed = JSON.parse(localStorage.getItem(key) || '[]');
       return Array.isArray(parsed) ? parsed.filter(value => typeof value === 'string') : [];
-    } catch {
-      return [];
-    }
+    } catch { return []; }
   }
 
-  private persist() {
-    localStorage.setItem(this.accountKey || GUEST_KEY, JSON.stringify([...this.values]));
-  }
-
-  private accountStorageKey(userId: number) {
-    return `amlakpro.favorite-slugs.user.${userId}`;
-  }
-
+  private persist() { localStorage.setItem(this.accountKey || GUEST_KEY, JSON.stringify([...this.values])); }
+  private accountStorageKey(userId: number) { return `amlakpro.favorite-slugs.user.${userId}`; }
   has(slug: string) { return this.values.has(slug); }
 
   toggle(slug: string) {
@@ -56,24 +57,18 @@ export class FavoritesService {
     this.syncing = true;
     const guestSlugs = this.read(GUEST_KEY);
 
-    this.auth.me().pipe(
-      catchError(() => of(null)),
-      finalize(() => this.syncing = false)
-    ).subscribe(user => {
+    this.auth.me().pipe(catchError(() => of(null)), finalize(() => this.syncing = false)).subscribe(user => {
       if (!user) return;
       this.accountKey = this.accountStorageKey(user.id);
       const cachedAccount = new Set(this.read(this.accountKey));
       guestSlugs.forEach(slug => cachedAccount.add(slug));
 
-      this.http.get<Array<{property_slug:string}>>(`${this.base}/favorites/`, {headers:this.auth.headers()}).pipe(
-        catchError(() => of([]))
-      ).subscribe(serverItems => {
+      this.http.get<Array<{property_slug:string}>>(`${this.base}/favorites/`, {headers:this.auth.headers()}).pipe(catchError(() => of([]))).subscribe(serverItems => {
         const serverSlugs = new Set(serverItems.map(item => item.property_slug));
         const missingFromServer = [...cachedAccount].filter(slug => !serverSlugs.has(slug));
 
         missingFromServer.forEach(slug => {
-          this.http.post(`${this.base}/favorites/`, {property_slug:slug}, {headers:this.auth.headers()})
-            .pipe(catchError(() => of(null))).subscribe();
+          this.http.post(`${this.base}/favorites/`, {property_slug:slug}, {headers:this.auth.headers()}).pipe(catchError(() => of(null))).subscribe();
           serverSlugs.add(slug);
         });
 
