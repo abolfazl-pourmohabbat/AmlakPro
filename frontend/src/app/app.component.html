@@ -13,16 +13,28 @@
     <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">درباره ما</a>
     <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">تماس با ما</a>
     <div class="nav-mobile-account">
+      <div class="nav-mobile-staff" *ngIf="isStaff">
+        <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">داشبورد</a>
+        <a routerLink="/analytics" routerLinkActive="active" (click)="closeMenu()">گزارش</a>
+        <a routerLink="/admin" routerLinkActive="active" (click)="closeMenu()">مدیریت</a>
+      </div>
       <a routerLink="/favorites" routerLinkActive="active" class="nav-favorites" (click)="closeMenu()">علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span></a>
-      <a routerLink="/register" class="nav-register" (click)="closeMenu()">ثبت نام</a>
-      <a routerLink="/login" class="nav-login" (click)="closeMenu()">ورود</a>
+      <a *ngIf="!auth.loggedIn()" routerLink="/register" class="nav-register" (click)="closeMenu()">ثبت نام</a>
+      <a *ngIf="!auth.loggedIn()" routerLink="/login" class="nav-login" (click)="closeMenu()">ورود</a>
+      <button *ngIf="auth.loggedIn()" type="button" class="nav-mobile-logout" (click)="logout()">خروج از حساب</button>
     </div>
   </nav>
 
   <div class="nav-account">
+    <div class="staff-links" *ngIf="isStaff">
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">داشبورد</a>
+      <a routerLink="/analytics" routerLinkActive="active" (click)="closeMenu()">گزارش</a>
+      <a routerLink="/admin" routerLinkActive="active" (click)="closeMenu()">مدیریت</a>
+    </div>
     <a routerLink="/favorites" routerLinkActive="active" class="nav-favorites" (click)="closeMenu()">علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span></a>
-    <a routerLink="/register" class="nav-register" (click)="closeMenu()">ثبت نام</a>
-    <a routerLink="/login" class="nav-login" (click)="closeMenu()">ورود</a>
+    <a *ngIf="!auth.loggedIn()" routerLink="/register" class="nav-register" (click)="closeMenu()">ثبت نام</a>
+    <a *ngIf="!auth.loggedIn()" routerLink="/login" class="nav-login" (click)="closeMenu()">ورود</a>
+    <button *ngIf="auth.loggedIn()" type="button" class="nav-logout" (click)="logout()">خروج</button>
   </div>
 </header>
 
