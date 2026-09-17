@@ -46,6 +46,7 @@ export class AppComponent {
   protected readonly api = inject(ApiService);
   protected readonly auth = inject(AuthService);
   protected readonly favorites = inject(FavoritesService);
+  protected readonly router = inject(Router);
   protected office: any = {};
   protected menuOpen = false;
   protected isStaff = false;
@@ -53,7 +54,7 @@ export class AppComponent {
   ngOnInit(): void {
     this.api.office().subscribe({ next: (value) => (this.office = value) });
     this.refreshAccountState();
-    this.authStateOnNavigation();
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => this.refreshAccountState());
   }
 
   private refreshAccountState(): void {
@@ -64,17 +65,12 @@ export class AppComponent {
     });
   }
 
-  private authStateOnNavigation(): void {
-    // Login/logout can happen without recreating AppComponent, so refresh the header state after route changes.
-    inject(Router).events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => this.refreshAccountState());
-  }
-
   logout(): void {
     this.auth.logout();
     this.favorites.resetAfterLogout();
     this.isStaff = false;
     this.closeMenu();
-    inject(Router).navigateByUrl('/');
+    this.router.navigateByUrl('/');
   }
 
   closeMenu(): void { this.menuOpen = false; }
