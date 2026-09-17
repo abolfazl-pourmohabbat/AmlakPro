@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Estedad:wght@400;500;600;700;800&family=Roboto:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --font-body: "Vazirmatn", sans-serif;
+  --font-heading: "Estedad", "Vazirmatn", sans-serif;
+  --font-latin: "Roboto", "Vazirmatn", sans-serif;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.page-head h1,
+.dash-top h1,
+.admin-head h1,
+.analytics-head h1,
+.detail-copy h1,
+.login-card h1,
+.section h2,
+.property-card h3,
+.agents h3,
+.panel-head h2,
+.card-head h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.brand,
+.eyebrow,
+.analytics-head .eyebrow {
+  font-family: var(--font-latin);
+}
+
+.nav nav,
+.nav-call,
+.dash-actions a,
+.dash-actions button,
+.admin-head-actions a,
+.admin-head-actions button,
+.admin-tabs button,
+.analytics-actions a,
+.analytics-actions button,
+.filterbar input,
+.filterbar select,
+.search input,
+.search select,
+.search button,
+.admin-form input,
+.admin-form select,
+.admin-form textarea,
+.office-form input,
+.office-form textarea,
+.primary,
+.row-actions button,
+.lead-row select,
+.lead select {
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+.nav nav { font-size: 15px; }
+
+.hero p,
+.section-head > a,
+.page-head p,
+.trust p,
+.agents p,
+footer p,
+.pc-body small,
+.specs,
+.agents article > span,
+.mini-property small,
+.mini-property span,
+.panel-head span,
+.panel-head a,
+.lead small,
+.lead p,
+.list-info small,
+.list-info span,
+.row-actions button,
+.lead-row small,
+.lead-row p,
+.analytics-card p,
+.analytics-stats small,
+.analytics-stats span,
+.analytics-state p {
+  font-size: 13px;
+}
+
+.trust p,
+.agents p,
+.page-head p,
+.hero p,
+footer p,
+.analytics-card p,
+.analytics-state p {
+  line-height: 1.9;
+}
+
+.search label,
+.admin-form label,
+.office-form label {
+  font-size: 13px;
+}
+
+.analytics-stats strong,
+.stat-grid strong,
+.price,
+.deal-list strong,
+.bar-value {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.analytics-actions button,
+.dash-actions button,
+.admin-head-actions button,
+.primary,
+.search button {
+  font-weight: 600;
+}
+
+.analytics-actions a,
+.analytics-actions button,
+.dash-actions a,
+.dash-actions button,
+.admin-head-actions a,
+.admin-head-actions button,
+.admin-tabs button,
+.row-actions button {
+  min-height: 44px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-family: var(--font-body);
+  font-size: 14px;
+}

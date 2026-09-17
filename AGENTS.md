@@ -140,6 +140,20 @@ For upload changes:
 - Keep responsive/mobile behavior intact.
 - User-facing copy should be clear and natural Persian.
 
+## Typography System
+
+Use typography intentionally rather than applying one font indiscriminately across the whole interface:
+
+- **Vazirmatn** is the primary UI/body font for Persian text, navigation, forms, buttons, labels, descriptions, tables, and general interface copy. It is a Persian/Arabic sans-serif designed for web pages and applications.
+- **Estedad** is the display/heading font for major headings and section titles such as page titles, dashboard/report headings, property titles, and important card headings. Use medium-to-bold weights for hierarchy without making the interface heavy.
+- **Roboto** is reserved mainly for Latin/English UI fragments such as brand labels, uppercase eyebrow text, and Latin-only technical labels. Do not force it over Persian text.
+- Use a small, consistent set of weights: regular/400 for normal text, medium/500 for controls, semibold/600 for emphasis and buttons, and bold/700–800 for headings and key metrics.
+- Default readable body text should generally be around 15px. Secondary/supporting text should not fall below 13px unless it is intentionally compact metadata.
+- Navigation, form controls, table labels, dashboard/report descriptions, and other user-facing small text should remain comfortably readable on desktop and mobile.
+- Keep line-height generous for Persian paragraphs and descriptions (roughly 1.8–2.0 where appropriate).
+- Do not introduce additional font families without a clear UI reason. The goal is a professional hierarchy, not decorative font mixing.
+- Typography changes must preserve responsive behavior and should be implemented as a focused visual change without altering application logic or API contracts.
+
 ## Security and Data Handling
 
 - Never expose secrets in source code, commits, logs, screenshots, or documentation.
