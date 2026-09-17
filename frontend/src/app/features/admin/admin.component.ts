@@ -5,7 +5,17 @@ import { RouterLink } from '@angular/router';
 import { ApiService, Agent, Property, PropertyImage } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
 
-@Component({selector:'app-admin',standalone:true,imports:[CommonModule,FormsModule,RouterLink],templateUrl:'./admin.component.html'})
+@Component({
+  selector:'app-admin',
+  standalone:true,
+  imports:[CommonModule,FormsModule,RouterLink],
+  templateUrl:'./admin.component.html',
+  styles:[` 
+    .admin-page{background:#f1eee8;min-height:calc(100vh - 82px);padding:55px 7vw 100px}.admin-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:30px}.admin-head h1{font-size:42px;margin:8px 0}.admin-head p{color:#777;font-size:16px}.admin-head-actions{display:flex;gap:10px}.admin-head-actions a,.admin-head-actions button{padding:12px 18px;border:1px solid #d3d0c8;background:#fff;font:inherit}.admin-head-actions button{background:#171714;color:#fff}.admin-tabs{display:flex;gap:6px;overflow:auto;margin-bottom:20px}.admin-tabs button{border:1px solid #d5d1c8;background:#fff;padding:13px 20px;font:inherit;white-space:nowrap;cursor:pointer}.admin-tabs button.active{background:#171714;color:#fff}.admin-tabs b{font-size:12px;margin-right:6px;opacity:.65}.notice{padding:13px 16px;background:#fff;margin-bottom:15px;font-size:14px}.notice.success{border-right:3px solid #62846c}.notice.error{border-right:3px solid #b34c40;color:#a03930}.admin-layout{display:grid;grid-template-columns:420px 1fr;gap:20px;align-items:start}.admin-form,.admin-list,.single-panel{background:#fff;padding:25px}.form-title,.list-title{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding-bottom:16px;margin-bottom:18px}.form-title h2,.list-title h2{margin:0;font-size:20px}.ghost{border:0;background:none;color:#967344;cursor:pointer;font:inherit}.admin-form label,.office-form label{display:block;font-size:14px;color:#666;margin:13px 0}.admin-form input:not([type=checkbox]):not([type=file]),.admin-form select,.admin-form textarea,.office-form input,.office-form textarea{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid #ddd;background:#fff;font:inherit;outline:none}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.checks{display:flex;flex-wrap:wrap;gap:14px}.checks label{display:flex;align-items:center;gap:5px}.primary{width:100%;padding:14px;border:0;background:#171714;color:#fff;font:inherit;cursor:pointer;margin-top:8px}.admin-list article{display:flex;align-items:center;gap:13px;border-bottom:1px solid #eee;padding:13px 0}.list-photo{width:76px;height:64px;background:#ddd center/cover;flex:none}.list-info{flex:1}.list-info b,.list-info small,.list-info span{display:block}.list-info b{font-size:15px}.list-info small{font-size:13px;color:#888;margin:4px 0}.list-info span{font-size:13px;color:#967344}.row-actions{display:flex;gap:6px}.row-actions button{border:1px solid #ddd;background:#fff;padding:7px 10px;font:inherit;font-size:12px;cursor:pointer}.row-actions .danger{color:#a33a31}.small-avatar{width:65px!important;height:65px!important;flex:none;background:center/cover!important}.lead-row{display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid #eee}.lead-row b,.lead-row small{display:block}.lead-row b{font-size:16px}.lead-row small{color:#888;margin-top:5px;font-size:14px}.lead-row p{font-size:14px;color:#777}.lead-row select{height:38px;border:1px solid #ddd;background:#fff;padding:0 8px;font:inherit}.office-form{max-width:800px}.office-form .primary{max-width:260px}.admin-page .empty{background:#faf9f6}.gallery-preview{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.gallery-preview button{border:1px solid #ddd;background:#fff;padding:4px;cursor:pointer}.gallery-preview img{width:82px;height:68px;object-fit:cover;display:block}
+    @media(max-width:1000px){.admin-layout{grid-template-columns:1fr}.admin-head{display:block}.admin-head-actions{margin-top:20px}}
+    @media(max-width:600px){.admin-page{padding:35px 20px}.form-grid{grid-template-columns:1fr}.admin-list article{align-items:flex-start}.row-actions{flex-direction:column}.lead-row{display:block}.lead-row select{width:100%;margin-top:10px}.admin-head h1{font-size:34px}.admin-head-actions{flex-wrap:wrap}.admin-head-actions a,.admin-head-actions button{flex:1;text-align:center}}
+  `]
+})
 export class AdminComponent {
  api=inject(ApiService); auth=inject(AuthService); tab='properties'; properties:Property[]=[]; agents:Agent[]=[]; leads:any[]=[]; office:any={}; editing:Property|null=null; editingAgent:Agent|null=null; message=''; error=''; selectedLead:any=null; activities:any[]=[]; activityText=''; activityType='note';
  form:any={title:'',slug:'',deal_type:'sale',property_type:'apartment',city:'',district:'',address:'',area:100,bedrooms:2,floor:'',built_year:'',price:0,deposit:0,rent:0,status:'available',featured:false,agent:'',parking:false,elevator:false,storage:false,balcony:false,description:''};
@@ -17,20 +27,8 @@ export class AdminComponent {
  editProperty(p:Property){this.editing=p;this.form={...p,agent:p.agent||''};this.image=null;this.galleryFiles=[];this.existingGallery=[...(p.gallery||[])];window.scrollTo({top:0,behavior:'smooth'});}
  onImage(e:any){const file=e.target.files?.[0]||null;this.image=file;if(file&&file.size>4*1024*1024){this.error='حجم تصویر باید کمتر از ۴ مگابایت باشد.';this.image=null;e.target.value='';}}
  onGallery(e:any){const files=Array.from(e.target.files||[]) as File[];const invalid=files.find(file=>file.size>4*1024*1024);if(invalid){this.error='حجم هر تصویر گالری باید کمتر از ۴ مگابایت باشد.';e.target.value='';this.galleryFiles=[];return;}this.error='';this.galleryFiles=files;}
- saveProperty(){
-   const fd=new FormData();Object.entries(this.form).forEach(([k,v])=>{if(v!==null&&v!==undefined)fd.append(k,String(v));});if(this.image)fd.append('image',this.image);
-   const req=this.editing?this.api.updateProperty(this.editing.slug,fd):this.api.createProperty(fd);
-   req.subscribe({next:saved=>{this.uploadGallery(saved.id||this.editing?.id);},error:e=>this.error=Object.values(e.error||{}).flat().join(' ')||'ذخیره ملک ناموفق بود.'});
- }
- private uploadGallery(propertyId:number|undefined){
-   if(!propertyId||!this.galleryFiles.length){this.finishPropertySave();return;}
-   const files=[...this.galleryFiles];
-   const uploadNext=(index:number)=>{
-     if(index>=files.length){this.finishPropertySave();return;}
-     this.api.addPropertyImage(propertyId,files[index],this.existingGallery.length+index).subscribe({next:()=>uploadNext(index+1),error:()=>this.error='ملک ذخیره شد اما یکی از تصاویر گالری آپلود نشد.'});
-   };
-   uploadNext(0);
- }
+ saveProperty(){const fd=new FormData();Object.entries(this.form).forEach(([k,v])=>{if(v!==null&&v!==undefined)fd.append(k,String(v));});if(this.image)fd.append('image',this.image);const req=this.editing?this.api.updateProperty(this.editing.slug,fd):this.api.createProperty(fd);req.subscribe({next:saved=>{this.uploadGallery(saved.id||this.editing?.id);},error:e=>this.error=Object.values(e.error||{}).flat().join(' ')||'ذخیره ملک ناموفق بود.'});}
+ private uploadGallery(propertyId:number|undefined){if(!propertyId||!this.galleryFiles.length){this.finishPropertySave();return;}const files=[...this.galleryFiles];const uploadNext=(index:number)=>{if(index>=files.length){this.finishPropertySave();return;}this.api.addPropertyImage(propertyId,files[index],this.existingGallery.length+index).subscribe({next:()=>uploadNext(index+1),error:()=>this.error='ملک ذخیره شد اما یکی از تصاویر گالری آپلود نشد.'});};uploadNext(0);}
  private finishPropertySave(){this.message='ملک و تصاویر آن با موفقیت ذخیره شدند.';this.resetProperty();this.api.properties().subscribe(v=>this.properties=this.api.list<Property>(v));}
  removeGalleryImage(image:PropertyImage){if(!confirm('این تصویر از گالری حذف شود؟'))return;this.api.deletePropertyImage(image.id).subscribe({next:()=>this.existingGallery=this.existingGallery.filter(x=>x.id!==image.id),error:()=>this.error='حذف تصویر ناموفق بود.'});}
  removeProperty(p:Property){if(!confirm(`حذف «${p.title}»؟`))return;this.api.deleteProperty(p.slug).subscribe({next:()=>this.properties=this.properties.filter(x=>x.slug!==p.slug),error:()=>this.error='حذف ملک ناموفق بود.'});}
