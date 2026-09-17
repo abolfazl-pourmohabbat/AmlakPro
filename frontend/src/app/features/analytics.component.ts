@@ -6,19 +6,17 @@ import { AuthService } from '../core/auth.service';
 
 @Component({
   selector: 'app-analytics', standalone: true, imports: [CommonModule, RouterLink],
-  templateUrl: './analytics.component.html'
+  templateUrl: './analytics.component.html',
+  styles:[`
+    .analytics-page{background:#f1eee8;min-height:calc(100vh - 82px);padding:55px 7vw 100px}.analytics-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:30px}.analytics-head h1{font-size:42px;margin:8px 0}.analytics-head p{color:#777;font-size:16px}.analytics-actions{display:flex;gap:10px}.analytics-actions a,.analytics-actions button{padding:12px 18px;border:1px solid #d3d0c8;background:#fff;font:inherit;cursor:pointer}.analytics-actions button{background:#171714;color:#fff}.analytics-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}.analytics-stats article{background:#fff;padding:24px}.analytics-stats small{color:#888;display:block;font-size:14px}.analytics-stats strong{display:block;font-size:35px;margin:10px 0}.analytics-stats span{font-size:14px;color:#987544}.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.analytics-card{background:#fff;padding:25px}.analytics-card.wide{grid-column:span 2}.card-head{display:flex;justify-content:space-between;align-items:start;border-bottom:1px solid #eee;padding-bottom:16px;margin-bottom:20px}.card-head h2{font-size:20px;margin:0}.card-head p{font-size:14px;color:#888;margin:5px 0 0}.card-head>b{font-size:13px;color:#987544}.bar-chart{display:flex;align-items:end;gap:6px;min-height:230px;overflow:auto;padding-top:20px}.bar-col{height:210px;min-width:18px;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:5px}.bar-value{font-size:11px;color:#777;min-height:16px}.bar{width:100%;min-height:0;background:#b8945c;border-radius:2px 2px 0 0}.bar-col small{font-size:10px;color:#888;white-space:nowrap}.rank-list{display:grid;gap:18px}.rank-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}.progress{height:8px;background:#eee}.progress i{display:block;height:100%;background:#b8945c}.deal-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.deal-list div{background:#f7f5f0;padding:20px 10px;text-align:center}.deal-list strong{display:block;font-size:28px}.deal-list span{font-size:13px;color:#777}.agent-table{display:grid}.agent-row{display:grid;grid-template-columns:1.5fr .7fr .7fr .7fr;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid #eee;font-size:14px}.agent-row span:first-child{display:flex;align-items:center;gap:10px}.agent-head{font-size:13px;color:#888}.agent-row strong{color:#987544}.mini-progress{display:block;width:90px;height:5px;background:#eee}.mini-progress em{display:block;height:100%;background:#b8945c}.analytics-state{min-height:calc(100vh - 82px);display:grid;place-items:center;align-content:center;gap:8px;background:#f1eee8;color:#777;text-align:center}.analytics-state .loader{width:30px;height:30px;border:3px solid #ddd;border-top-color:#987544;border-radius:50%;animation:spin .8s linear infinite}.analytics-state p{margin:0;font-size:15px}.error-state{padding:40px}.error-state h2{color:#222}.error-state a{display:inline-block;margin-top:15px;padding:12px 18px;background:#171714;color:#fff}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:900px){.analytics-head{display:block}.analytics-actions{margin-top:20px;flex-wrap:wrap}.analytics-stats{grid-template-columns:repeat(2,1fr)}.analytics-grid{grid-template-columns:1fr}.analytics-card.wide{grid-column:auto}}
+    @media(max-width:550px){.analytics-page{padding:35px 20px}.analytics-head h1{font-size:34px}.analytics-stats{grid-template-columns:1fr}.analytics-actions a,.analytics-actions button{flex:1;text-align:center}.analytics-card{padding:20px}.deal-list{grid-template-columns:1fr}.agent-row{grid-template-columns:1.3fr .6fr .6fr .7fr;font-size:12px}.mini-progress{width:55px}.bar-chart{gap:4px}}
+  `]
 })
 export class AnalyticsComponent {
   private api = inject(ApiService); private auth = inject(AuthService);
   data: any = null; loading = true; error = '';
-
-  ngOnInit() {
-    this.api.analytics().subscribe({
-      next: value => { this.data = value; this.loading = false; },
-      error: err => { this.loading = false; this.error = err.status === 403 ? 'دسترسی به گزارش‌ها فقط برای مدیران دفتر فعال است.' : 'گزارش‌ها بارگذاری نشد.'; }
-    });
-  }
-
+  ngOnInit() { this.api.analytics().subscribe({ next: value => { this.data = value; this.loading = false; }, error: err => { this.loading = false; this.error = err.status === 403 ? 'دسترسی به گزارش‌ها فقط برای مدیران دفتر فعال است.' : 'گزارش‌ها بارگذاری نشد.'; } }); }
   maxDaily() { return Math.max(1, ...(this.data?.daily_leads || []).map((x: any) => x.count)); }
   maxAgent() { return Math.max(1, ...(this.data?.agents || []).map((x: any) => x.leads)); }
   bar(value: number, max: number) { return `${Math.max(value ? 4 : 0, Math.round((value / max) * 100))}%`; }
