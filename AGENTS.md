@@ -57,7 +57,9 @@ Every substantial project change should remain:
 
 ## AmlakPro Architecture and Business Rules
 
-The application is a real estate office website and management system. Important capabilities include public property search/listing/detail pages, agents, office information, favorites, visit/lead requests, authentication, dashboard/CRM, activity history, analytics, and Django admin management.
+The application is a real estate office website and management system. Important capabilities include public property search/listing/detail pages, agents, office information, account-based favorites, visit/lead requests, authentication, dashboard/CRM, activity history, analytics, and Django admin management.
+
+### Property business rules
 
 The backend `Property` model currently uses these deal types:
 
@@ -79,6 +81,14 @@ Property cards must display money according to `deal_type`, not always use `pric
 
 The same pricing/display logic should be consistent between the homepage cards and the properties-list cards. Property detail is the reference when checking the correct underlying values.
 
+### Account and favorites rules
+
+- Registered customer favorites are persisted in the backend and associated with the authenticated Django user.
+- Guests may temporarily use local browser favorites; when a customer logs in or registers, local favorites are synchronized with the account.
+- Do not regress favorites back to being browser-only for authenticated users.
+- Favorite API endpoints require authentication and users must only see/change their own favorites.
+- Public property/favorite data must not expose sold/rented properties through endpoints intended for active public listings.
+
 ## Important Lessons / Known Issues
 
 - DRF serializer bug previously occurred because `source='gallery'` was redundantly specified on the `gallery` field. Do not reintroduce that pattern.
@@ -90,6 +100,8 @@ The same pricing/display logic should be consistent between the homepage cards a
 - Angular deployment previously required the configured output path that places browser files directly under `dist/amalkpro`; do not casually change this and reintroduce Vercel 404s.
 - Search/filter behavior previously showed overly broad matching for a neighborhood query such as «سعادت آباد». Preserve any subsequent narrowing/fix and do not broaden search across unrelated fields without a product reason.
 - A previous rental-card bug showed `0 تومان` on homepage/list cards while the detail page correctly showed the rental amount. Root cause: cards always rendered `p.price`. This was fixed by switching card display to deal-type-aware `price`/`deposit`/`rent` logic. Keep homepage and properties-list cards consistent.
+- Production Django must not default to `DEBUG=True`. `DJANGO_DEBUG=false` and a real `DJANGO_SECRET_KEY` must be configured for Vercel production.
+- The repository currently does not commit a frontend lockfile, so CI uses `npm install` rather than `npm ci` until a lockfile is intentionally added.
 
 ## Development Workflow
 
@@ -135,12 +147,15 @@ For frontend changes:
 - Check the affected route/page in production after Vercel deployment when possible.
 - Verify API data is rendered with the correct field and formatting.
 - For typography changes, verify desktop and mobile readability and check that no text causes horizontal overflow.
+- Verify the mobile navigation exposes favorites, registration, and login.
 
 For backend changes:
 
 - Django checks/tests when available.
 - Verify affected API endpoint and HTTP status.
 - Preserve PostgreSQL/Neon connectivity.
+- Verify authenticated users can only access their own account favorites.
+- Run `python manage.py check --deploy` against production settings before a production release when the environment allows it.
 
 For upload changes:
 
@@ -163,6 +178,7 @@ For upload changes:
 - Do not hard-code production credentials.
 - Validate uploads and API input.
 - Keep authentication and protected management endpoints protected.
+- New customer auth tokens are kept in session storage rather than long-lived local storage; legacy local tokens are migrated out when encountered.
 - Do not weaken CORS, CSRF, authentication, permissions, throttling, or validation merely to make a test pass.
 
 ## Decision Rule
@@ -177,4 +193,4 @@ When several technically valid solutions exist, prefer the one that:
 
 ## Project History Principle
 
-Treat lessons from previous AmlakPro debugging as regression requirements. In particular, avoid reintroducing serializer field-source errors, Vercel routing/output mistakes, local-filesystem upload assumptions, duplicate upload filenames, broken API content types, and inconsistent card/detail data formatting.
+Treat lessons from previous AmlakPro debugging as regression requirements. In particular, avoid reintroducing serializer field-source errors, Vercel routing/output mistakes, local-filesystem upload assumptions, duplicate upload filenames, broken API content types, inconsistent card/detail data formatting, browser-only authenticated favorites, and unprotected management routes.
