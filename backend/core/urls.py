@@ -4,6 +4,7 @@ from .views import (
     PropertyImageListCreateView, PropertyImageDetailView,
     AgentListView, AgentDetailView, LeadCreateView, LeadListView,
     LeadUpdateView, LeadActivityListCreateView, LeadActivityDetailView, DashboardStatsView, AnalyticsView, HealthView,
+    FavoriteListView, FavoriteDetailView,
 )
 
 urlpatterns = [
@@ -21,6 +22,8 @@ urlpatterns = [
     path('leads/<int:pk>/', LeadUpdateView.as_view()),
     path('lead-activities/', LeadActivityListCreateView.as_view()),
     path('lead-activities/<int:pk>/', LeadActivityDetailView.as_view()),
+    path('favorites/', FavoriteListView.as_view()),
+    path('favorites/<slug:slug>/', FavoriteDetailView.as_view()),
     path('dashboard/', DashboardStatsView.as_view()),
     path('analytics/', AnalyticsView.as_view()),
 ]
