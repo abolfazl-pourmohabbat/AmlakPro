@@ -101,7 +101,6 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self): return f'{self.name} - {self.phone}'
 
-
 class LeadActivity(models.Model):
     CALL = 'call'; NOTE = 'note'; VISIT = 'visit'; STATUS = 'status'
     TYPES = [(CALL, 'تماس'), (NOTE, 'یادداشت'), (VISIT, 'بازدید'), (STATUS, 'تغییر وضعیت')]
@@ -116,3 +115,15 @@ class LeadActivity(models.Model):
 
     def __str__(self):
         return f'{self.lead.name} - {self.activity_type}'
+
+class Favorite(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='favorites')
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='favorited_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'property'], name='unique_user_property_favorite')]
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.user.username} - {self.property.title}'
