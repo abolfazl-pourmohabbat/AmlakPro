@@ -10,14 +10,17 @@
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">خانه</a>
     <a routerLink="/properties" routerLinkActive="active" (click)="closeMenu()">املاک</a>
     <a routerLink="/agents" routerLinkActive="active" (click)="closeMenu()">مشاوران</a>
-    <a routerLink="/favorites" routerLinkActive="active" class="favorites-link" (click)="closeMenu()">
-      علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span>
-    </a>
+    <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">درباره ما</a>
+    <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">تماس با ما</a>
   </nav>
 
-  <a class="nav-call" [href]="office.phone ? 'tel:' + office.phone : null">
-    {{ office.phone || 'تماس با دفتر' }}
-  </a>
+  <div class="nav-account">
+    <a routerLink="/favorites" routerLinkActive="active" class="nav-favorites" (click)="closeMenu()">
+      علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span>
+    </a>
+    <a routerLink="/register" class="nav-register" (click)="closeMenu()">ثبت نام</a>
+    <a routerLink="/login" class="nav-login" (click)="closeMenu()">ورود</a>
+  </div>
 </header>
 
 <main id="main-content">
