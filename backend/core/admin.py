@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import OfficeProfile, Agent, Property, PropertyImage, Lead, LeadActivity
+from .models import OfficeProfile, Agent, Property, PropertyImage, Lead, LeadActivity, Favorite
 
 @admin.register(OfficeProfile)
 class OfficeProfileAdmin(admin.ModelAdmin):
@@ -34,3 +34,9 @@ class LeadActivityAdmin(admin.ModelAdmin):
     list_display = ('lead','activity_type','created_by','created_at')
     list_filter = ('activity_type',)
     search_fields = ('lead__name','lead__phone','text')
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('user','property','created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username','property__title','property__slug')
