@@ -12,12 +12,15 @@
     <a routerLink="/agents" routerLinkActive="active" (click)="closeMenu()">مشاوران</a>
     <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">درباره ما</a>
     <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">تماس با ما</a>
+    <div class="nav-mobile-account">
+      <a routerLink="/favorites" routerLinkActive="active" class="nav-favorites" (click)="closeMenu()">علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span></a>
+      <a routerLink="/register" class="nav-register" (click)="closeMenu()">ثبت نام</a>
+      <a routerLink="/login" class="nav-login" (click)="closeMenu()">ورود</a>
+    </div>
   </nav>
 
   <div class="nav-account">
-    <a routerLink="/favorites" routerLinkActive="active" class="nav-favorites" (click)="closeMenu()">
-      علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span>
-    </a>
+    <a routerLink="/favorites" routerLinkActive="active" class="nav-favorites" (click)="closeMenu()">علاقه‌مندی‌ها <span class="favorite-count">{{ favorites.count() }}</span></a>
     <a routerLink="/register" class="nav-register" (click)="closeMenu()">ثبت نام</a>
     <a routerLink="/login" class="nav-login" (click)="closeMenu()">ورود</a>
   </div>
