@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
-export interface PropertyImage {id:number; image_url:string|null; caption?:string; sort_order:number;}
+export interface PropertyImage {id:number; property?:number; image_url:string|null; caption?:string; sort_order:number;}
 export interface Property {id?:number;slug:string;title:string;deal_type:string;property_type:string;city:string;district:string;address?:string;area:number;bedrooms:number;floor?:string;built_year?:number;price:number;deposit:number;rent:number;status:string;featured:boolean;image_url:string|null;agent_name:string|null;agent_phone?:string;agent?:number|null;parking:boolean;elevator:boolean;storage:boolean;balcony:boolean;description?:string;gallery?:PropertyImage[];}
 export interface Agent {id:number;name:string;role:string;phone:string;bio:string;image_url:string|null;is_active?:boolean;}
 @Injectable({providedIn:'root'}) export class ApiService {
@@ -15,6 +15,9 @@ export interface Agent {id:number;name:string;role:string;phone:string;bio:strin
  createProperty(data:FormData){return this.http.post<Property>(`${this.base}/properties/`,data,{headers:this.headers()});}
  updateProperty(slug:string,data:FormData){return this.http.patch<Property>(`${this.base}/properties/${slug}/`,data,{headers:this.headers()});}
  deleteProperty(slug:string){return this.http.delete(`${this.base}/properties/${slug}/`,{headers:this.headers()});}
+ propertyImages(property:number){return this.http.get<any>(`${this.base}/property-images/`,{params:new HttpParams().set('property',property),headers:this.headers()});}
+ addPropertyImage(property:number,file:File,sortOrder=0){const fd=new FormData();fd.append('property',String(property));fd.append('image',file);fd.append('sort_order',String(sortOrder));return this.http.post<PropertyImage>(`${this.base}/property-images/`,fd,{headers:this.headers()});}
+ deletePropertyImage(id:number){return this.http.delete(`${this.base}/property-images/${id}/`,{headers:this.headers()});}
  agents(){return this.http.get<any>(`${this.base}/agents/`);}
  createAgent(data:FormData){return this.http.post<Agent>(`${this.base}/agents/`,data,{headers:this.headers()});}
  updateAgent(id:number,data:FormData){return this.http.patch<Agent>(`${this.base}/agents/${id}/`,data,{headers:this.headers()});}
