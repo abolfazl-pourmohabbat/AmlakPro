@@ -16,7 +16,10 @@ import { ApiService } from '../core/api.service';
       </div>
       <div class="contact-actions"><a routerLink="/properties">مشاهده املاک</a><a routerLink="/agents">مشاهده مشاوران</a></div>
     </section>
-  `
+  `,
+  styles:[`
+    .info-page{min-height:calc(100vh - 82px);background:#f1eee8;padding-bottom:90px}.info-hero{padding:90px 7vw 55px;background:#ebe7df}.info-hero h1{font-size:48px;margin:12px 0}.info-hero p{color:#777;line-height:2}.contact-grid{width:min(1000px,86vw);margin:0 auto;padding:55px 0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.contact-grid article{background:#fff;padding:28px}.contact-grid span{display:block;font-size:12px;color:#967344;margin-bottom:10px}.contact-grid a{font-size:19px;font-weight:600}.contact-grid p{margin:0;color:#555;line-height:2}.contact-actions{width:min(1000px,86vw);margin:auto;display:flex;gap:10px}.contact-actions a{background:#171714;color:#fff;padding:13px 22px}@media(max-width:700px){.info-hero{padding:60px 22px 40px}.info-hero h1{font-size:36px}.contact-grid{width:auto;margin:0 22px;grid-template-columns:1fr}.contact-actions{width:auto;margin:0 22px;flex-direction:column}.contact-actions a{text-align:center}}
+  `]
 })
 export class ContactComponent {
   private api=inject(ApiService); office:any={};
