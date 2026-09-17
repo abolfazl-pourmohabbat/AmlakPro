@@ -17,6 +17,24 @@ export class LoginComponent {
   submit(){
     if(!this.username.trim() || !this.password){this.error='نام کاربری و رمز عبور را وارد کنید.';return;}
     this.loading=true; this.error='';
-    this.auth.login(this.username.trim(),this.password).subscribe({next:()=>{this.favorites.syncWithAccount();this.router.navigateByUrl('/')},error:e=>{this.loading=false;this.error=e.error?.non_field_errors?.[0]||e.error?.detail||'ورود ناموفق بود. نام کاربری یا رمز عبور را بررسی کنید.';}});
+    this.auth.login(this.username.trim(),this.password).subscribe({
+      next:()=>{
+        this.auth.me().subscribe({
+          next:user=>{
+            this.favorites.syncWithAccount();
+            this.router.navigateByUrl(user.is_staff || user.is_superuser ? '/dashboard' : '/');
+          },
+          error:()=>{
+            this.auth.logout();
+            this.loading=false;
+            this.error='ورود انجام شد اما تأیید حساب از سرور ناموفق بود. دوباره تلاش کنید.';
+          }
+        });
+      },
+      error:e=>{
+        this.loading=false;
+        this.error=e.error?.non_field_errors?.[0]||e.error?.detail||'ورود ناموفق بود. نام کاربری یا رمز عبور را بررسی کنید.';
+      }
+    });
   }
 }
