@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/auth.service';
+import { FavoritesService } from '../core/favorites.service';
 
 @Component({
   standalone: true,
@@ -24,22 +25,17 @@ import { AuthService } from '../core/auth.service';
     </section>
   `,
   styles: [`
-    .account-page{min-height:calc(100vh - 82px);background:#f1eee8;display:grid;place-items:center;padding:70px 20px}
-    .account-card{width:min(480px,100%);background:#fff;padding:44px;box-shadow:0 18px 55px #17171414}
-    .account-card h1{font-size:34px;margin:12px 0 8px}.account-card>p{color:#777;line-height:2;font-size:13px;margin-bottom:25px}
-    form{display:grid;gap:14px}label{display:block;font-size:12px;color:#555}input{display:block;width:100%;margin-top:6px;padding:13px;border:1px solid #ddd;background:#fff;font:inherit;outline:none}input:focus{border-color:#b8945c}
-    button{border:0;background:#171714;color:#fff;padding:14px;font:inherit;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.account-error{color:#a33a31;background:#fff5f3;border-right:3px solid #b34c40;padding:10px;font-size:12px}.account-switch{text-align:center;margin-top:20px;color:#777;font-size:12px}.account-switch a{color:#967344;font-weight:600}
-    @media(max-width:550px){.account-card{padding:30px 22px}}
+    .account-page{min-height:calc(100vh - 82px);background:#f1eee8;display:grid;place-items:center;padding:70px 20px}.account-card{width:min(480px,100%);background:#fff;padding:44px;box-shadow:0 18px 55px #17171414}.account-card h1{font-size:34px;margin:12px 0 8px}.account-card>p{color:#777;line-height:2;font-size:13px;margin-bottom:25px}form{display:grid;gap:14px}label{display:block;font-size:12px;color:#555}input{display:block;width:100%;margin-top:6px;padding:13px;border:1px solid #ddd;background:#fff;font:inherit;outline:none}input:focus{border-color:#b8945c}button{border:0;background:#171714;color:#fff;padding:14px;font:inherit;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.account-error{color:#a33a31;background:#fff5f3;border-right:3px solid #b34c40;padding:10px;font-size:12px}.account-switch{text-align:center;margin-top:20px;color:#777;font-size:12px}.account-switch a{color:#967344;font-weight:600}@media(max-width:550px){.account-card{padding:30px 22px}}
   `]
 })
 export class LoginComponent {
-  private auth=inject(AuthService); private router=inject(Router);
+  private auth=inject(AuthService); private favorites=inject(FavoritesService); private router=inject(Router);
   username=''; password=''; loading=false; error='';
   submit(){
     if(!this.username.trim() || !this.password){this.error='نام کاربری و رمز عبور را وارد کنید.';return;}
     this.loading=true; this.error='';
     this.auth.login(this.username.trim(),this.password).subscribe({
-      next:()=>this.router.navigateByUrl('/'),
+      next:()=>{this.favorites.syncWithAccount();this.router.navigateByUrl('/')},
       error:e=>{this.loading=false;this.error=e.error?.non_field_errors?.[0]||e.error?.detail||'ورود ناموفق بود. نام کاربری یا رمز عبور را بررسی کنید.';}
     });
   }
