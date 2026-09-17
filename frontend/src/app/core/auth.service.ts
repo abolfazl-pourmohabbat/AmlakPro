@@ -9,9 +9,10 @@ const TOKEN_KEY='amlak_token';
 @Injectable({providedIn:'root'})
 export class AuthService {
   private http=inject(HttpClient); private base=environment.apiUrl;
-  login(username:string,password:string):Observable<{token:string}>{return this.http.post<{token:string}>(`${this.base}/auth/token/`,{username,password}).pipe(tap(r=>sessionStorage.setItem(TOKEN_KEY,r.token)));}
-  register(data:{username:string,password:string,first_name?:string,last_name?:string,email?:string}):Observable<{token:string;name:string}>{return this.http.post<{token:string;name:string}>(`${this.base}/auth/register/`,data).pipe(tap(r=>sessionStorage.setItem(TOKEN_KEY,r.token)));}
-  logout(){sessionStorage.removeItem(TOKEN_KEY);localStorage.removeItem(TOKEN_KEY);}
+  private changed(){ if(typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('amlak-auth-changed')); }
+  login(username:string,password:string):Observable<{token:string}>{return this.http.post<{token:string}>(`${this.base}/auth/token/`,{username,password}).pipe(tap(r=>{sessionStorage.setItem(TOKEN_KEY,r.token);this.changed();}));}
+  register(data:{username:string,password:string,first_name?:string,last_name?:string,email?:string}):Observable<{token:string;name:string}>{return this.http.post<{token:string;name:string}>(`${this.base}/auth/register/`,data).pipe(tap(r=>{sessionStorage.setItem(TOKEN_KEY,r.token);this.changed();}));}
+  logout(){sessionStorage.removeItem(TOKEN_KEY);localStorage.removeItem(TOKEN_KEY);this.changed();}
   token(){
     const current=sessionStorage.getItem(TOKEN_KEY);
     if(current) return current;
