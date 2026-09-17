@@ -40,6 +40,21 @@ Every substantial project change should remain:
 - Secure: validate inputs, protect secrets, handle authentication/authorization correctly, and treat uploads/API endpoints as untrusted input.
 - SEO-conscious for public web pages where relevant.
 
+## Typography and Readability
+
+- The site is Persian-first and typography is a core part of the product UI, not an afterthought.
+- Use **Estedad** as the primary UI typeface for Persian/Arabic text. It is a screen/web-oriented Arabic-Latin sans-serif family with multiple weights and is licensed under SIL OFL 1.1.
+- Use **Roboto** as the Latin fallback/companion where appropriate.
+- Prefer the existing global font stack rather than introducing a different font family in individual components unless there is a specific design reason.
+- Use readable weights: normally 400 for body text, 500–600 for navigation/labels, and 700–800 for important headings.
+- Do not use very small body or navigation text. As a general UI rule, avoid sizes below 13px; normal body copy should usually be 14–16px or larger.
+- Secondary/supporting text may be smaller than body text, but it must remain comfortably readable on desktop and mobile.
+- Increase line-height for Persian paragraphs and multi-line UI copy where needed; prioritize readability over fitting more text into a small area.
+- Keep typography consistent across homepage, property cards, property lists, agent pages, account pages, dashboard, reports, and management screens.
+- When changing typography, preserve the existing visual identity: clean, professional, restrained real-estate presentation. Do not turn the UI into an oversized or decorative design.
+- Responsive typography is required: headings and body text must remain readable on smaller screens without causing horizontal overflow.
+- Avoid adding a paid/proprietary font dependency when a suitable open font already meets the requirement.
+
 ## AmlakPro Architecture and Business Rules
 
 The application is a real estate office website and management system. Important capabilities include public property search/listing/detail pages, agents, office information, favorites, visit/lead requests, authentication, dashboard/CRM, activity history, analytics, and Django admin management.
@@ -119,6 +134,7 @@ For frontend changes:
 - Angular production build when available.
 - Check the affected route/page in production after Vercel deployment when possible.
 - Verify API data is rendered with the correct field and formatting.
+- For typography changes, verify desktop and mobile readability and check that no text causes horizontal overflow.
 
 For backend changes:
 
@@ -136,6 +152,7 @@ For upload changes:
 
 - Persian-first UI.
 - Simple, clean, professional real-estate presentation.
+- Typography should use the established Estedad/Roboto stack and readable sizing rules above.
 - Avoid unnecessary animations, abstractions, dependencies, and visual redesigns during bug fixes.
 - Keep responsive/mobile behavior intact.
 - User-facing copy should be clear and natural Persian.
