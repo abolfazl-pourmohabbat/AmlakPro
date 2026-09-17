@@ -1,18 +1,24 @@
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 def env_bool(name, default=False):
     return os.getenv(name, str(default)).lower() in {'1','true','yes','on'}
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-only-change-me')
-DEBUG = env_bool('DJANGO_DEBUG', True)
+IS_VERCEL = bool(os.getenv('VERCEL'))
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    if IS_VERCEL:
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY must be configured in production.')
+    SECRET_KEY = 'dev-only-change-me'
+DEBUG = env_bool('DJANGO_DEBUG', default=not IS_VERCEL)
 
 _default_hosts = ['127.0.0.1', 'localhost']
 if os.getenv('VERCEL_URL'):
     _default_hosts.append(os.getenv('VERCEL_URL'))
-if os.getenv('VERCEL'):
+if IS_VERCEL:
     _default_hosts.append('.vercel.app')
 ALLOWED_HOSTS = [h.strip() for h in os.getenv('DJANGO_ALLOWED_HOSTS', ','.join(_default_hosts)).split(',') if h.strip()]
 
@@ -42,8 +48,6 @@ AUTH_PASSWORD_VALIDATORS=[
 LANGUAGE_CODE='fa-ir'; TIME_ZONE='Asia/Tehran'; USE_I18N=True; USE_TZ=True
 STATIC_URL='/static/'; STATIC_ROOT=BASE_DIR/'staticfiles'; MEDIA_URL='/media/'; MEDIA_ROOT=BASE_DIR/'media'
 
-# Vercel Functions have a read-only deployment filesystem. When a Blob store
-# is connected, all uploaded media uses Vercel Blob instead of local disk.
 if os.getenv('BLOB_READ_WRITE_TOKEN'):
     STORAGES = {
         'default': {'BACKEND': 'core.storage.VercelBlobStorage'},
@@ -68,4 +72,5 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS=True
     SECURE_HSTS_PRELOAD=True
     SECURE_CONTENT_TYPE_NOSNIFF=True
+    SECURE_REFERRER_POLICY='same-origin'
     X_FRAME_OPTIONS='DENY'
