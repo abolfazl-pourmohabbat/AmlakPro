@@ -6,7 +6,7 @@ class OfficeProfile(models.Model):
     def __str__(self): return self.name
     class Meta: verbose_name='اطلاعات دفتر'; verbose_name_plural='اطلاعات دفتر'
 class Agent(models.Model):
-    name=models.CharField(max_length=120); role=models.CharField(max_length=120,blank=True); phone=models.CharField(max_length=30); bio=models.TextField(blank=True); image=models.ImageField(upload_to='agents/',blank=True,null=True); is_active=models.BooleanField(default=True); created_at=models.DateTimeField(auto_now_add=True)
+    name=models.CharField(max_length=120); name_en=models.CharField(max_length=120,blank=True); role=models.CharField(max_length=120,blank=True); role_en=models.CharField(max_length=120,blank=True); phone=models.CharField(max_length=30); bio=models.TextField(blank=True); bio_en=models.TextField(blank=True); image=models.ImageField(upload_to='agents/',blank=True,null=True); is_active=models.BooleanField(default=True); created_at=models.DateTimeField(auto_now_add=True)
     def __str__(self): return self.name
 class Property(models.Model):
     SALE='sale'; RENT='rent'; MORTGAGE='mortgage'; DEAL_TYPES=[(SALE,'فروش'),(RENT,'اجاره'),(MORTGAGE,'رهن')]; APARTMENT='apartment'; HOUSE='house'; VILLA='villa'; LAND='land'; COMMERCIAL='commercial'; TYPES=[(APARTMENT,'آپارتمان'),(HOUSE,'خانه'),(VILLA,'ویلا'),(LAND,'زمین'),(COMMERCIAL,'تجاری')]; AVAILABLE='available'; NEGOTIATING='negotiating'; SOLD='sold'; RENTED='rented'; STATUS=[(AVAILABLE,'موجود'),(NEGOTIATING,'در مذاکره'),(SOLD,'فروخته شد'),(RENTED,'اجاره رفت')]
