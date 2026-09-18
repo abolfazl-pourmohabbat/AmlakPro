@@ -29,6 +29,7 @@ class VercelBlobStorage(Storage):
                     filename,
                     access=self.access,
                     content_type=content_type,
+                    add_random_suffix=True,
                 )
             return blob.pathname
         finally:
