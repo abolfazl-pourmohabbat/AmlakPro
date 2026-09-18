@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 
 class OfficeProfile(models.Model):
-    name=models.CharField(max_length=160,default='دفتر املاک'); phone=models.CharField(max_length=30,blank=True); mobile=models.CharField(max_length=30,blank=True); address=models.CharField(max_length=300,blank=True); city=models.CharField(max_length=80,blank=True); description=models.TextField(blank=True); updated_at=models.DateTimeField(auto_now=True)
+    name=models.CharField(max_length=160,default='دفتر املاک'); name_en=models.CharField(max_length=160,default='Real Estate Office'); phone=models.CharField(max_length=30,blank=True); mobile=models.CharField(max_length=30,blank=True); address=models.CharField(max_length=300,blank=True); city=models.CharField(max_length=80,blank=True); city_en=models.CharField(max_length=80,blank=True); address_en=models.CharField(max_length=300,blank=True); description=models.TextField(blank=True); description_en=models.TextField(blank=True); updated_at=models.DateTimeField(auto_now=True)
     def __str__(self): return self.name
     class Meta: verbose_name='اطلاعات دفتر'; verbose_name_plural='اطلاعات دفتر'
 class Agent(models.Model):
@@ -10,7 +10,7 @@ class Agent(models.Model):
     def __str__(self): return self.name
 class Property(models.Model):
     SALE='sale'; RENT='rent'; MORTGAGE='mortgage'; DEAL_TYPES=[(SALE,'فروش'),(RENT,'اجاره'),(MORTGAGE,'رهن')]; APARTMENT='apartment'; HOUSE='house'; VILLA='villa'; LAND='land'; COMMERCIAL='commercial'; TYPES=[(APARTMENT,'آپارتمان'),(HOUSE,'خانه'),(VILLA,'ویلا'),(LAND,'زمین'),(COMMERCIAL,'تجاری')]; AVAILABLE='available'; NEGOTIATING='negotiating'; SOLD='sold'; RENTED='rented'; STATUS=[(AVAILABLE,'موجود'),(NEGOTIATING,'در مذاکره'),(SOLD,'فروخته شد'),(RENTED,'اجاره رفت')]
-    title=models.CharField(max_length=220); slug=models.SlugField(unique=True,blank=True); deal_type=models.CharField(max_length=20,choices=DEAL_TYPES); property_type=models.CharField(max_length=20,choices=TYPES); city=models.CharField(max_length=80); district=models.CharField(max_length=120); address=models.CharField(max_length=300,blank=True); area=models.PositiveIntegerField(); bedrooms=models.PositiveSmallIntegerField(default=0); floor=models.CharField(max_length=20,blank=True); built_year=models.PositiveSmallIntegerField(blank=True,null=True); price=models.DecimalField(max_digits=18,decimal_places=0,default=0); deposit=models.DecimalField(max_digits=18,decimal_places=0,default=0); rent=models.DecimalField(max_digits=18,decimal_places=0,default=0); description=models.TextField(blank=True); parking=models.BooleanField(default=False); elevator=models.BooleanField(default=False); storage=models.BooleanField(default=False); balcony=models.BooleanField(default=False); featured=models.BooleanField(default=False); status=models.CharField(max_length=20,choices=STATUS,default=AVAILABLE); image=models.ImageField(upload_to='properties/',blank=True,null=True); agent=models.ForeignKey(Agent,on_delete=models.SET_NULL,null=True,blank=True,related_name='properties'); created_at=models.DateTimeField(auto_now_add=True); updated_at=models.DateTimeField(auto_now=True)
+    title=models.CharField(max_length=220); title_en=models.CharField(max_length=220,blank=True); slug=models.SlugField(unique=True,blank=True); deal_type=models.CharField(max_length=20,choices=DEAL_TYPES); property_type=models.CharField(max_length=20,choices=TYPES); city=models.CharField(max_length=80); city_en=models.CharField(max_length=80,blank=True); district=models.CharField(max_length=120); district_en=models.CharField(max_length=120,blank=True); address=models.CharField(max_length=300,blank=True); address_en=models.CharField(max_length=300,blank=True); area=models.PositiveIntegerField(); bedrooms=models.PositiveSmallIntegerField(default=0); floor=models.CharField(max_length=20,blank=True); built_year=models.PositiveSmallIntegerField(blank=True,null=True); price=models.DecimalField(max_digits=18,decimal_places=0,default=0); deposit=models.DecimalField(max_digits=18,decimal_places=0,default=0); rent=models.DecimalField(max_digits=18,decimal_places=0,default=0); description=models.TextField(blank=True); description_en=models.TextField(blank=True); parking=models.BooleanField(default=False); elevator=models.BooleanField(default=False); storage=models.BooleanField(default=False); balcony=models.BooleanField(default=False); featured=models.BooleanField(default=False); status=models.CharField(max_length=20,choices=STATUS,default=AVAILABLE); image=models.ImageField(upload_to='properties/',blank=True,null=True); agent=models.ForeignKey(Agent,on_delete=models.SET_NULL,null=True,blank=True,related_name='properties'); created_at=models.DateTimeField(auto_now_add=True); updated_at=models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
         if not self.slug:
             base=slugify(self.title) or 'property'; slug=base; n=2
@@ -43,7 +43,80 @@ class SiteSettings(models.Model):
     agents_eyebrow=models.CharField(max_length=100,default='تیم ما'); agents_title=models.CharField(max_length=180,default='مشاورانی که کنار شما هستند'); agents_intro=models.TextField(default='تخصص محلی، پاسخ‌گویی و همراهی تا پایان معامله.'); agents_empty_text=models.CharField(max_length=180,default='هنوز مشاوری ثبت نشده است.'); agents_phone_label=models.CharField(max_length=80,default='تماس با مشاور');
     about_button=models.CharField(max_length=100,default='مشاهده املاک');
     contact_eyebrow=models.CharField(max_length=100,default='در ارتباط باشیم'); contact_title=models.CharField(max_length=120,default='تماس با ما'); contact_intro=models.TextField(default='برای پرسش درباره ملک‌ها، هماهنگی بازدید یا دریافت مشاوره با دفتر املاک پرو در ارتباط باشید.'); contact_office_name_label=models.CharField(max_length=80,default='نام دفتر'); contact_city_label=models.CharField(max_length=80,default='شهر'); contact_description_label=models.CharField(max_length=80,default='معرفی دفتر'); contact_phone_label=models.CharField(max_length=80,default='تلفن دفتر'); contact_mobile_label=models.CharField(max_length=80,default='موبایل'); contact_address_label=models.CharField(max_length=80,default='آدرس دفتر'); contact_cta_eyebrow=models.CharField(max_length=120,default='نیاز به پیدا کردن ملک دارید؟'); contact_cta_title=models.CharField(max_length=180,default='از بین ملک‌های موجود شروع کنید.'); contact_cta_button=models.CharField(max_length=100,default='مشاهده املاک')
-    footer_copyright=models.CharField(max_length=180,default='© ۱۴۰۵ — تمامی حقوق محفوظ است.'); footer_office_empty_text=models.CharField(max_length=180,default='اطلاعات دفتر در حال تکمیل است.'); instagram_url=models.URLField(blank=True); telegram_url=models.URLField(blank=True); whatsapp_url=models.URLField(blank=True); instagram_label=models.CharField(max_length=60,default='اینستاگرام'); telegram_label=models.CharField(max_length=60,default='تلگرام'); whatsapp_label=models.CharField(max_length=60,default='واتساپ'); updated_at=models.DateTimeField(auto_now=True)
+    footer_copyright=models.CharField(max_length=180,default='© ۱۴۰۵ — تمامی حقوق محفوظ است.');
+    site_name_en=models.CharField(default="AmlakPro",max_length=220);
+    site_tagline_en=models.CharField(default="We help you find the home you're looking for.",max_length=220);
+    nav_home_en=models.CharField(default="Home",max_length=220);
+    nav_properties_en=models.CharField(default="Properties",max_length=220);
+    nav_agents_en=models.CharField(default="Agents",max_length=220);
+    nav_about_en=models.CharField(default="About Us",max_length=220);
+    nav_contact_en=models.CharField(default="Contact Us",max_length=220);
+    nav_favorites_en=models.CharField(default="Favorites",max_length=220);
+    hero_eyebrow_en=models.CharField(default="Specialized buying, selling and rental office",max_length=220);
+    hero_title_en=models.CharField(default="The right property for you,",max_length=220);
+    hero_title_emphasis_en=models.CharField(default="is right here.",max_length=220);
+    hero_description_en=models.TextField(default="With precise search and professional advice, make your next property decision with confidence.");
+    hero_search_label_en=models.CharField(default="Search",max_length=220);
+    hero_search_placeholder_en=models.CharField(default="e.g. Saadat Abad, 120 m² apartment",max_length=220);
+    hero_deal_label_en=models.CharField(default="Deal type",max_length=220);
+    hero_search_button_en=models.CharField(default="Search properties",max_length=220);
+    featured_eyebrow_en=models.CharField(default="Featured picks",max_length=220);
+    featured_title_en=models.CharField(default="Properties worth seeing",max_length=220);
+    featured_link_en=models.CharField(default="View all →",max_length=220);
+    empty_properties_text_en=models.CharField(default="No featured property has been added yet.",max_length=220);
+    trust_1_title_en=models.CharField(default="Transparent advice",max_length=220);
+    trust_1_text_en=models.CharField(default="Clear, verifiable information for better decisions.",max_length=220);
+    trust_2_title_en=models.CharField(default="Precise selection",max_length=220);
+    trust_2_text_en=models.CharField(default="Useful filters to reach the right option faster.",max_length=220);
+    trust_3_title_en=models.CharField(default="With you to the deal",max_length=220);
+    trust_3_text_en=models.CharField(default="From the first call to viewing and closing.",max_length=220);
+    about_eyebrow_en=models.CharField(default="Learn more",max_length=220);
+    about_title_en=models.CharField(default="About AmlakPro",max_length=220);
+    about_intro_en=models.TextField(default="A modern real estate office for finding, comparing and choosing property with confidence.");
+    about_card_1_title_en=models.CharField(default="Simple and transparent",max_length=220);
+    about_card_1_text_en=models.TextField(default="We present property information clearly and practically so your path from search to deal is easier.");
+    about_card_2_title_en=models.CharField(default="Expert advice",max_length=220);
+    about_card_2_text_en=models.TextField(default="For buying, selling, mortgage and rental, our advisors are available to provide the information you need.");
+    about_card_3_title_en=models.CharField(default="With you to the deal",max_length=220);
+    about_card_3_text_en=models.TextField(default="Our goal is more than displaying a property; we support you from the first search to the final deal.");
+    properties_eyebrow_en=models.CharField(default="Properties",max_length=220);
+    properties_title_en=models.CharField(default="Your next property",max_length=220);
+    properties_intro_en=models.TextField(default="Search and filter the office's available properties.");
+    properties_search_placeholder_en=models.CharField(default="City, district or property name",max_length=220);
+    properties_deal_label_en=models.CharField(default="Deal type",max_length=220);
+    properties_type_label_en=models.CharField(default="Property type",max_length=220);
+    properties_ordering_label_en=models.CharField(default="Sort by",max_length=220);
+    properties_apply_button_en=models.CharField(default="Apply filters",max_length=220);
+    properties_clear_button_en=models.CharField(default="Clear",max_length=220);
+    properties_prev_button_en=models.CharField(default="Previous",max_length=220);
+    properties_next_button_en=models.CharField(default="Next",max_length=220);
+    properties_loading_text_en=models.CharField(default="Loading properties...",max_length=220);
+    properties_error_text_en=models.CharField(default="Could not load properties.",max_length=220);
+    properties_empty_text_en=models.CharField(default="No property matches your search.",max_length=220);
+    properties_count_label_en=models.CharField(default="properties",max_length=220);
+    agents_eyebrow_en=models.CharField(default="Our team",max_length=220);
+    agents_title_en=models.CharField(default="Advisors who are here for you",max_length=220);
+    agents_intro_en=models.TextField(default="Local expertise, responsiveness and support through the deal.");
+    agents_empty_text_en=models.CharField(default="No advisors have been added yet.",max_length=220);
+    agents_phone_label_en=models.CharField(default="Contact advisor",max_length=220);
+    about_button_en=models.CharField(default="View properties",max_length=220);
+    contact_eyebrow_en=models.CharField(default="Let's connect",max_length=220);
+    contact_title_en=models.CharField(default="Contact us",max_length=220);
+    contact_intro_en=models.TextField(default="For property questions, viewing appointments or advice, contact AmlakPro.");
+    contact_office_name_label_en=models.CharField(default="Office name",max_length=220);
+    contact_city_label_en=models.CharField(default="City",max_length=220);
+    contact_description_label_en=models.CharField(default="Office introduction",max_length=220);
+    contact_phone_label_en=models.CharField(default="Office phone",max_length=220);
+    contact_mobile_label_en=models.CharField(default="Mobile",max_length=220);
+    contact_address_label_en=models.CharField(default="Office address",max_length=220);
+    contact_cta_eyebrow_en=models.CharField(default="Looking for a property?",max_length=220);
+    contact_cta_title_en=models.CharField(default="Start with the available properties.",max_length=220);
+    contact_cta_button_en=models.CharField(default="View properties",max_length=220);
+    footer_copyright_en=models.CharField(default="© 2026 — All rights reserved.",max_length=220);
+    footer_office_empty_text_en=models.CharField(default="Office information is being completed.",max_length=220);
+    instagram_label_en=models.CharField(default="Instagram",max_length=220);
+    telegram_label_en=models.CharField(default="Telegram",max_length=220);
+    whatsapp_label_en=models.CharField(default="WhatsApp",max_length=220); footer_office_empty_text=models.CharField(max_length=180,default='اطلاعات دفتر در حال تکمیل است.'); instagram_url=models.URLField(blank=True); telegram_url=models.URLField(blank=True); whatsapp_url=models.URLField(blank=True); instagram_label=models.CharField(max_length=60,default='اینستاگرام'); telegram_label=models.CharField(max_length=60,default='تلگرام'); whatsapp_label=models.CharField(max_length=60,default='واتساپ'); updated_at=models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
         if not self.pk and SiteSettings.objects.exists(): self.pk=SiteSettings.objects.first().pk
         super().save(*args,**kwargs)

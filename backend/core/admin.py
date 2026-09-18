@@ -7,11 +7,17 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     def has_add_permission(self,request): return not SiteSettings.objects.exists()
     def has_delete_permission(self,request,obj=None): return False
 @admin.register(OfficeProfile)
-class OfficeProfileAdmin(admin.ModelAdmin): list_display=('name','phone','city','updated_at')
+class OfficeProfileAdmin(admin.ModelAdmin):
+    list_display=('name','phone','city','updated_at')
+    fieldsets=(('فارسی',{'fields':('name','city','address','description')}),('English',{'fields':('name_en','city_en','address_en','description_en')}),('تماس',{'fields':('phone','mobile')}))
 @admin.register(Agent)
-class AgentAdmin(admin.ModelAdmin): list_display=('name','role','phone','is_active'); list_filter=('is_active',); search_fields=('name','phone')
+class AgentAdmin(admin.ModelAdmin):
+    list_display=('name','role','phone','is_active')
+    fieldsets=(('فارسی',{'fields':('name','role','bio','image','phone','is_active')}),('English',{'fields':('name_en','role_en','bio_en')})) list_filter=('is_active',); search_fields=('name','phone')
 @admin.register(Property)
-class PropertyAdmin(admin.ModelAdmin): list_display=('title','deal_type','property_type','city','district','area','status','featured','agent'); list_filter=('deal_type','property_type','status','featured'); search_fields=('title','city','district','address'); prepopulated_fields={'slug':('title',)}
+class PropertyAdmin(admin.ModelAdmin):
+    list_display=('title','deal_type','property_type','city','district','area','status','featured','agent')
+    fieldsets=(('فارسی',{'fields':('title','slug','deal_type','property_type','city','district','address','description')}),('English',{'fields':('title_en','city_en','district_en','address_en','description_en')}),('جزئیات ملک',{'fields':('area','bedrooms','floor','built_year','price','deposit','rent','parking','elevator','storage','balcony','featured','status','image','agent')})) list_filter=('deal_type','property_type','status','featured'); search_fields=('title','city','district','address'); prepopulated_fields={'slug':('title',)}
 @admin.register(PropertyImage)
 class PropertyImageAdmin(admin.ModelAdmin): list_display=('property','sort_order','created_at'); list_filter=('property',)
 @admin.register(Lead)
