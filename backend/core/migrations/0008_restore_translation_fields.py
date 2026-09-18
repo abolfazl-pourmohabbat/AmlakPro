@@ -1,0 +1,26 @@
+from django.db import migrations, models
+
+def ensure_translation_columns(apps, schema_editor):
+    connection = schema_editor.connection
+    cursor = connection.cursor()
+    existing = {column.name for column in connection.introspection.get_table_description(cursor, 'core_officeprofile')}
+    OfficeProfile = apps.get_model('core', 'OfficeProfile')
+    if 'translations' not in existing:
+        schema_editor.add_field(OfficeProfile, OfficeProfile._meta.get_field('translations'))
+
+    existing = {column.name for column in connection.introspection.get_table_description(cursor, 'core_property')}
+    Property = apps.get_model('core', 'Property')
+    if 'translations' not in existing:
+        schema_editor.add_field(Property, Property._meta.get_field('translations'))
+
+class Migration(migrations.Migration):
+    dependencies = [('core','0007_contact_labels')]
+    operations = [
+        migrations.SeparateDatabaseAndState(
+            database_operations=[migrations.RunPython(ensure_translation_columns, migrations.RunPython.noop)],
+            state_operations=[
+                migrations.AddField(model_name='officeprofile', name='translations', field=models.JSONField(blank=True, default=dict)),
+                migrations.AddField(model_name='property', name='translations', field=models.JSONField(blank=True, default=dict)),
+            ],
+        ),
+    ]
