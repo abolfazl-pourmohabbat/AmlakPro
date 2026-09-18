@@ -13,6 +13,10 @@ def ensure_translation_columns(apps, schema_editor):
     if 'translations' not in existing:
         schema_editor.add_field(Property, Property._meta.get_field('translations'))
 
+    with connection.cursor() as cursor:
+        cursor.execute("UPDATE core_officeprofile SET translations = '{}'::jsonb WHERE translations IS NULL")
+        cursor.execute("UPDATE core_property SET translations = '{}'::jsonb WHERE translations IS NULL")
+
 class Migration(migrations.Migration):
     dependencies = [('core','0007_contact_labels')]
     operations = [
