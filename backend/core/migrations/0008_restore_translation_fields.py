@@ -4,14 +4,16 @@ def ensure_translation_columns(apps, schema_editor):
     connection = schema_editor.connection
     cursor = connection.cursor()
     existing = {column.name for column in connection.introspection.get_table_description(cursor, 'core_officeprofile')}
-    OfficeProfile = apps.get_model('core', 'OfficeProfile')
     if 'translations' not in existing:
-        schema_editor.add_field(OfficeProfile, OfficeProfile._meta.get_field('translations'))
+        field = models.JSONField(default=dict, blank=True)
+        field.set_attributes_from_name('translations')
+        schema_editor.add_field(apps.get_model('core', 'OfficeProfile'), field)
 
     existing = {column.name for column in connection.introspection.get_table_description(cursor, 'core_property')}
-    Property = apps.get_model('core', 'Property')
     if 'translations' not in existing:
-        schema_editor.add_field(Property, Property._meta.get_field('translations'))
+        field = models.JSONField(default=dict, blank=True)
+        field.set_attributes_from_name('translations')
+        schema_editor.add_field(apps.get_model('core', 'Property'), field)
 
     with connection.cursor() as cursor:
         cursor.execute("UPDATE core_officeprofile SET translations = '{}'::jsonb WHERE translations IS NULL")
