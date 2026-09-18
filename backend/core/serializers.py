@@ -57,6 +57,10 @@ class PropertyImageSerializer(serializers.ModelSerializer):
         return request.build_absolute_uri(obj.image.url) if request else obj.image.url
 
 class PropertySerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        validated_data.setdefault('translations', {})
+        return super().create(validated_data)
+
     def validate_image(self, value):
         if value:
             if value.size > 4 * 1024 * 1024:
