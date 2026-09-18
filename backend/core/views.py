@@ -30,13 +30,23 @@ class CurrentUserView(APIView):
 
 class OfficeProfileView(APIView):
     def get(self, request):
-        office = OfficeProfile.objects.first() or OfficeProfile.objects.create()
+        office = OfficeProfile.objects.first()
+        if office is None:
+            office = OfficeProfile.objects.create(translations={})
+        elif office.translations is None:
+            office.translations = {}
+            office.save(update_fields=['translations','updated_at'])
         return Response(OfficeProfileSerializer(office, context={'request': request}).data)
 
     def put(self, request):
         if not request.user.is_authenticated or not (request.user.is_staff or request.user.is_superuser):
             return Response({'detail': 'دسترسی غیرمجاز'}, status=403)
-        office = OfficeProfile.objects.first() or OfficeProfile.objects.create()
+        office = OfficeProfile.objects.first()
+        if office is None:
+            office = OfficeProfile.objects.create(translations={})
+        elif office.translations is None:
+            office.translations = {}
+            office.save(update_fields=['translations','updated_at'])
         serializer = OfficeProfileSerializer(office, data=request.data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
