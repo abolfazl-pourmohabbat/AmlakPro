@@ -4,16 +4,24 @@ from django.utils.text import slugify
 class OfficeProfile(models.Model):
     translations=models.JSONField(default=dict, blank=True)
     name=models.CharField(max_length=160,default='دفتر املاک'); phone=models.CharField(max_length=30,blank=True); mobile=models.CharField(max_length=30,blank=True); address=models.CharField(max_length=300,blank=True); city=models.CharField(max_length=80,blank=True); description=models.TextField(blank=True); updated_at=models.DateTimeField(auto_now=True)
+    def save(self,*args,**kwargs):
+        if self.translations is None: self.translations={}
+        super().save(*args,**kwargs)
     def __str__(self): return self.name
     class Meta: verbose_name='اطلاعات دفتر'; verbose_name_plural='اطلاعات دفتر'
 class Agent(models.Model):
+    translations=models.JSONField(default=dict, blank=True)
     name=models.CharField(max_length=120); role=models.CharField(max_length=120,blank=True); phone=models.CharField(max_length=30); bio=models.TextField(blank=True); image=models.ImageField(upload_to='agents/',blank=True,null=True); is_active=models.BooleanField(default=True); created_at=models.DateTimeField(auto_now_add=True)
+    def save(self,*args,**kwargs):
+        if self.translations is None: self.translations={}
+        super().save(*args,**kwargs)
     def __str__(self): return self.name
 class Property(models.Model):
     translations=models.JSONField(default=dict, blank=True)
     SALE='sale'; RENT='rent'; MORTGAGE='mortgage'; DEAL_TYPES=[(SALE,'فروش'),(RENT,'اجاره'),(MORTGAGE,'رهن')]; APARTMENT='apartment'; HOUSE='house'; VILLA='villa'; LAND='land'; COMMERCIAL='commercial'; TYPES=[(APARTMENT,'آپارتمان'),(HOUSE,'خانه'),(VILLA,'ویلا'),(LAND,'زمین'),(COMMERCIAL,'تجاری')]; AVAILABLE='available'; NEGOTIATING='negotiating'; SOLD='sold'; RENTED='rented'; STATUS=[(AVAILABLE,'موجود'),(NEGOTIATING,'در مذاکره'),(SOLD,'فروخته شد'),(RENTED,'اجاره رفت')]
     title=models.CharField(max_length=220); slug=models.SlugField(unique=True,blank=True); deal_type=models.CharField(max_length=20,choices=DEAL_TYPES); property_type=models.CharField(max_length=20,choices=TYPES); city=models.CharField(max_length=80); district=models.CharField(max_length=120); address=models.CharField(max_length=300,blank=True); area=models.PositiveIntegerField(); bedrooms=models.PositiveSmallIntegerField(default=0); floor=models.CharField(max_length=20,blank=True); built_year=models.PositiveSmallIntegerField(blank=True,null=True); price=models.DecimalField(max_digits=18,decimal_places=0,default=0); deposit=models.DecimalField(max_digits=18,decimal_places=0,default=0); rent=models.DecimalField(max_digits=18,decimal_places=0,default=0); description=models.TextField(blank=True); parking=models.BooleanField(default=False); elevator=models.BooleanField(default=False); storage=models.BooleanField(default=False); balcony=models.BooleanField(default=False); featured=models.BooleanField(default=False); status=models.CharField(max_length=20,choices=STATUS,default=AVAILABLE); image=models.ImageField(upload_to='properties/',blank=True,null=True); agent=models.ForeignKey(Agent,on_delete=models.SET_NULL,null=True,blank=True,related_name='properties'); created_at=models.DateTimeField(auto_now_add=True); updated_at=models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
+        if self.translations is None: self.translations={}
         if not self.slug:
             base=slugify(self.title) or 'property'; slug=base; n=2
             while Property.objects.filter(slug=slug).exclude(pk=self.pk).exists(): slug=f'{base}-{n}'; n+=1
